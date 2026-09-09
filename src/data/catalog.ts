@@ -20,6 +20,7 @@ export type Competition = {
   name: string
   shortName: string
   description: string
+  logo: string
 }
 
 export const projects: Project[] = [
@@ -55,13 +56,13 @@ export const camps: Camp[] = [
 ]
 
 export const competitions: Competition[] = [
-  { id: 'conrad', shortName: 'Conrad', name: 'Conrad Challenge 康莱德创新挑战赛', description: '适合具有明确社会问题、创新技术方案与跨学科验证路径的项目。' },
-  { id: 'icc', shortName: 'ICC', name: 'ICC 全球发明大会', description: '适合创新产品、工程设计及综合发明成果展示。' },
-  { id: 'iena', shortName: 'iENA', name: 'iENA 德国纽伦堡国际发明展', description: '适合具有实体原型、工程创新或应用价值的发明项目。' },
-  { id: 'diamond', shortName: 'Diamond', name: 'Diamond Challenge 钻石挑战赛', description: '适合能够形成用户价值、解决方案与项目表达的创新方向。' },
-  { id: 'blueocean', shortName: 'Blue Ocean', name: 'Blue Ocean 蓝海创业大赛', description: '适合具备用户洞察、市场机会与创新模式的项目。' },
-  { id: 'bpa', shortName: 'BPA', name: 'BPA 美国商业全能挑战赛', description: '适合能够延展商业计划、运营思路与英文表达的项目。' },
-  { id: 'bpc', shortName: 'BPC', name: 'BPC 哈佛商业挑战论坛', description: '适合把技术成果进一步转化为商业叙事与项目提案的方向。' },
+  { id: 'conrad', shortName: 'Conrad', name: 'Conrad Challenge 康莱德创新挑战赛', description: '适合具有明确社会问题、创新技术方案与跨学科验证路径的项目。', logo: 'conrad.svg' },
+  { id: 'icc', shortName: 'ICC', name: 'ICC 全球发明大会（中国）', description: '适合创新产品、工程设计及综合发明成果展示。', logo: 'icc.png' },
+  { id: 'iena', shortName: 'iENA', name: 'iENA 德国纽伦堡国际发明展', description: '适合具有实体原型、工程创新或应用价值的发明项目。', logo: 'iena.png' },
+  { id: 'diamond', shortName: 'Diamond', name: 'Diamond Challenge 钻石挑战赛', description: '适合能够形成用户价值、解决方案与项目表达的创新方向。', logo: 'diamond.png' },
+  { id: 'blueocean', shortName: 'Blue Ocean', name: 'Blue Ocean 蓝海创业大赛', description: '适合具备用户洞察、市场机会与创新模式的项目。', logo: 'blue-ocean.png' },
+  { id: 'bpa', shortName: 'BPA', name: 'BPA 美国商业全能挑战赛', description: '适合能够延展商业计划、运营思路与英文表达的项目。', logo: 'bpa.svg' },
+  { id: 'bpc', shortName: 'HCBC', name: 'Harvard Crimson Business Competition 哈佛深红商业挑战赛', description: '适合把技术成果进一步转化为商业叙事与项目提案的方向。', logo: 'bpc.png' },
 ]
 
 export const conradProjectIds = new Set(['p01', 'p03', 'p05', 'p08', 'p11', 'p13', 'p17', 'p20'])

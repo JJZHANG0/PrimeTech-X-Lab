@@ -24,7 +24,7 @@ import {
   type Project,
 } from './data/catalog'
 
-type Screen = 'welcome' | 'project' | 'quiz' | 'camp' | 'competition' | 'result'
+type Screen = 'welcome' | 'intro-project' | 'project' | 'quiz' | 'intro-camp' | 'camp' | 'intro-competition' | 'competition' | 'result'
 type Poster = { url: string; blob: Blob }
 
 const quizQuestions = [
@@ -132,6 +132,23 @@ function BottomAction({ children }: { children: React.ReactNode }) {
   return <div className="bottom-action">{children}</div>
 }
 
+function StepIntro({ eyebrow, title, copy, action, onContinue, onBack }: {
+  eyebrow: string
+  title: React.ReactNode
+  copy: string
+  action: string
+  onContinue: () => void
+  onBack: () => void
+}) {
+  return (
+    <motion.section key={eyebrow} className="step-intro" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }}>
+      <header><button className="round-button" onClick={onBack} aria-label="返回"><ArrowLeft /></button><Logo compact /><span /></header>
+      <div className="step-intro-copy"><p className="kicker">{eyebrow}</p><h1>{title}</h1><p>{copy}</p></div>
+      <button className="primary-button" onClick={onContinue}>{action}<ArrowRight /></button>
+    </motion.section>
+  )
+}
+
 function getAssessment(score: number | null) {
   if (score === null) return null
   if (score <= 4) return { title: '刚刚起步', note: '建议搭配一个适配营地，先补齐方法与动手基础。', tone: 'starter' }
@@ -163,7 +180,7 @@ function wrapText(context: CanvasRenderingContext2D, text: string, x: number, y:
   return currentY
 }
 
-async function makePoster(project: Project, camp: Camp, competitionNames: string[], assessment: ReturnType<typeof getAssessment>): Promise<Poster> {
+async function makePoster(project: Project, camp: Camp | null, competitionNames: string[], assessment: ReturnType<typeof getAssessment>): Promise<Poster> {
   await document.fonts?.ready
   const canvas = document.createElement('canvas')
   canvas.width = 1080
@@ -228,7 +245,7 @@ async function makePoster(project: Project, camp: Camp, competitionNames: string
   }
 
   card(472, '01', '研究课题', project.title, project.majors.slice(0, 3))
-  card(806, '02', '技能营地', camp.name, [camp.output])
+  card(806, '02', '技能营地', camp?.name ?? '已跳过营地', [camp?.output ?? '已有经验 · 直接推进课题'])
   card(1140, '03', '竞赛方向', competitionNames.join('  ×  '))
 
   context.fillStyle = '#ece5fb'
@@ -323,7 +340,7 @@ export default function App() {
     const next = [...quizAnswers.slice(0, quizIndex), score]
     setQuizAnswers(next)
     if (quizIndex === quizQuestions.length - 1) {
-      setScreen(quizReturn)
+      setScreen(quizReturn === 'camp' ? 'intro-camp' : 'result')
       setQuizIndex(0)
     } else {
       setQuizIndex((current) => current + 1)
@@ -336,7 +353,7 @@ export default function App() {
   }
 
   const createPoster = async () => {
-    if (!selectedProject || !selectedCamp || selectedCompetitionIds.length !== 2) return
+    if (!selectedProject || selectedCompetitionIds.length !== 2) return
     setPosterBusy(true)
     try {
       if (poster) URL.revokeObjectURL(poster.url)
@@ -393,9 +410,11 @@ export default function App() {
                 <h1>请开始你的<br />自主规划路线</h1>
                 <p>选择一个感兴趣的课题，我们会继续匹配营地与竞赛。</p>
               </div>
-              <button className="primary-button" onClick={() => setScreen('project')}>开始规划<ArrowRight /></button>
+              <button className="primary-button" onClick={() => setScreen('intro-project')}>开始规划<ArrowRight /></button>
             </motion.section>
           )}
+
+          {screen === 'intro-project' && <StepIntro eyebrow="第一步 · 研究方向" title={<>先找到一个<br />真正想做的课题</>} copy="按专业快速筛选，点击标题了解内容，再选出一个你愿意持续投入的方向。" action="开始选择课题" onContinue={() => setScreen('project')} onBack={() => setScreen('welcome')} />}
 
           {screen === 'project' && (
             <motion.section key="project" className="planner" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }}>
@@ -441,9 +460,11 @@ export default function App() {
                   {quizQuestions[quizIndex].options.map((option, index) => <button key={option.label} onClick={() => answerQuiz(option.score)}><i>{String.fromCharCode(65 + index)}</i><span>{option.label}</span><ChevronRight /></button>)}
                 </div>
               </div>
-              <button className="skip-button" onClick={() => setScreen(quizReturn)}>{quizReturn === 'result' ? '暂不重测，返回方案' : '暂时跳过，直接选营地'}</button>
+              <button className="skip-button" onClick={() => setScreen(quizReturn === 'camp' ? 'intro-camp' : 'result')}>{quizReturn === 'result' ? '暂不重测，返回方案' : '暂时跳过，继续规划'}</button>
             </motion.section>
           )}
+
+          {screen === 'intro-camp' && <StepIntro eyebrow="第二步 · 技能准备" title={<>要不要先补齐<br />关键技能？</>} copy="营地是可选项。需要带领时，选择与课题匹配的营地；已有经验，也可以直接跳过。" action="查看适配营地" onContinue={() => setScreen('camp')} onBack={() => setScreen('project')} />}
 
           {screen === 'camp' && selectedProject && (
             <motion.section key="camp" className="planner" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }}>
@@ -451,6 +472,7 @@ export default function App() {
               <PageHeading eyebrow="第二步 · 选择营地" title="补齐关键技能" copy="只可勾选与当前课题适配的营地。点营地名称查看详细介绍。" />
               {assessment && <div className={`assessment-tip ${assessment.tone}`}><Sparkles /><div><b>{assessment.title}</b><span>{assessment.note}</span></div></div>}
               {!assessment && <button className="assessment-invite" onClick={() => { setQuizReturn('camp'); setQuizIndex(0); setQuizAnswers([]); setScreen('quiz') }}><Sparkles /><div><b>还不确定自己的起点？</b><span>用 1 分钟做个可选自测</span></div><ChevronRight /></button>}
+              <div className="camp-skip-note"><Check /><div><b>已有经验，可以不选营地</b><span>不影响继续选择竞赛，也可以稍后返回补选。</span></div></div>
               <div className="choice-list">
                 {camps.map((camp) => {
                   const compatible = selectedProject.campIds.includes(camp.id)
@@ -465,9 +487,11 @@ export default function App() {
                   )
                 })}
               </div>
-              <BottomAction><button className="back-link" onClick={() => setScreen('project')}><ArrowLeft />上一步</button><button className="primary-button" disabled={!selectedCamp} onClick={() => setScreen('competition')}>下一步<ArrowRight /></button></BottomAction>
+              <BottomAction><button className="back-link" onClick={() => setScreen('project')}><ArrowLeft />上一步</button><button className="primary-button" onClick={() => setScreen('intro-competition')}>{selectedCamp ? '下一步' : '跳过营地'}<ArrowRight /></button></BottomAction>
             </motion.section>
           )}
+
+          {screen === 'intro-competition' && <StepIntro eyebrow="第三步 · 成果舞台" title={<>最后，为成果<br />选择两个舞台</>} copy="我们会根据课题方向筛出适配竞赛。你只需要像选择套餐一样，从中选出两个。" action="开始选择竞赛" onContinue={() => setScreen('competition')} onBack={() => setScreen('camp')} />}
 
           {screen === 'competition' && selectedProject && (
             <motion.section key="competition" className="planner" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }}>
@@ -481,7 +505,7 @@ export default function App() {
                   const atLimit = selectedCompetitionIds.length === 2 && !selected
                   return (
                     <button key={competition.id} disabled={!compatible || atLimit} onClick={() => toggleCompetition(competition.id)} className={`competition-row${selected ? ' is-selected' : ''}${compatible ? '' : ' is-disabled'}`}>
-                      <span className="competition-code">{competition.shortName}</span>
+                      <span className="competition-logo"><img src={`${import.meta.env.BASE_URL}competition-logos/${competition.logo}`} alt={`${competition.shortName} Logo`} /></span>
                       <span className="competition-copy"><b>{competition.name}</b><small>{competition.description}</small></span>
                       <i>{selected ? <Check /> : compatible ? <span /> : <LockKeyhole />}</i>
                     </button>
@@ -492,13 +516,13 @@ export default function App() {
             </motion.section>
           )}
 
-          {screen === 'result' && selectedProject && selectedCamp && (
+          {screen === 'result' && selectedProject && (
             <motion.section key="result" className="result-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <header className="result-top"><Logo compact /><button className="round-button" onClick={reset} aria-label="重新开始"><RotateCcw /></button></header>
               <div className="result-heading"><p className="kicker">规划完成</p><h1>你的创新<br />成长方案</h1><p>课题、技能与竞赛已经连接成一条清晰路线。</p></div>
               <div className="route-card">
                 <div><i>01</i><span>研究课题</span><b>{selectedProject.title}</b></div>
-                <div><i>02</i><span>技能营地</span><b>{selectedCamp.name}</b></div>
+                <div><i>02</i><span>技能营地</span><b>{selectedCamp?.name ?? '已跳过 · 直接推进课题'}</b></div>
                 <div><i>03</i><span>竞赛方向</span><b>{selectedCompetitionIds.map((id) => competitions.find((item) => item.id === id)?.name).join(' ＋ ')}</b></div>
               </div>
               {assessment ? <div className={`assessment-result ${assessment.tone}`}><Sparkles /><div><span>自我认知</span><b>{assessment.title}</b><small>{assessment.note}</small></div></div> : <button className="assessment-invite result-invite" onClick={() => { setQuizReturn('result'); setQuizIndex(0); setQuizAnswers([]); setScreen('quiz') }}><Sparkles /><div><b>还没做自我认知</b><span>可选 · 用 1 分钟补充起点判断</span></div><ChevronRight /></button>}

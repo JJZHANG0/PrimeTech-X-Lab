@@ -4,6 +4,8 @@ export type Project = {
   majors: string[]
   description: string
   campIds: string[]
+  competitionIds: string[]
+  poster?: string
 }
 
 export type Camp = {
@@ -32,26 +34,26 @@ export type Competition = {
 }
 
 export const projects: Project[] = [
-  { id: 'p01', title: 'ProShot：投篮动作量化装置', majors: ['运动人体科学', '人工智能', '生物医学工程'], campIds: ['perception', 'wearable'], description: 'ProShot面向篮球训练中动作评价依赖教练经验、训练数据难以沉淀的问题，利用惯性传感器或视觉识别采集出手角度、手腕速度、身体姿态与命中结果，建立投篮动作量化模型，并通过移动端界面生成即时反馈与训练趋势。学生将完成传感采集、动作特征提取、评分算法和原型测试，最终形成可用于个人训练及教练评估的智能运动辅助装置。' },
-  { id: 'p02', title: 'The Last Library of Human Mistakes', majors: ['人工智能', '计算机科学', '数据科学'], campIds: ['agent', 'fullstack'], description: '这是一套以“失败经验能否成为可检索知识”为核心的AI数字档案系统。项目收集经匿名处理的学习、工程或决策失误案例，利用结构化标签、语义检索与大语言模型智能体进行归因分析，帮助用户发现相似错误、理解形成机制并获得改进建议。学生将完成数据规范、知识库、RAG问答、交互界面以及偏差与隐私测试。' },
-  { id: 'p03', title: 'MindBeat：智能空灵鼓认知训练系统', majors: ['音乐科技', '生物医学工程', '认知科学'], campIds: ['wearable', 'fullstack'], description: 'MindBeat将空灵鼓的低门槛演奏方式与认知训练结合，通过压力、敲击位置和节奏传感记录用户的演奏行为，并设计注意力、工作记忆与节奏模仿等互动任务。系统根据反应时间、节奏稳定性和任务完成度生成个性化反馈，探索音乐交互对青少年或特殊需求群体认知参与的作用。学生将完成硬件采集、音乐映射、训练界面与小规模用户测试。' },
-  { id: 'p04', title: 'NeuroScope：脑电注意力状态可视化研究', majors: ['神经科学', '生物医学工程', '人工智能'], campIds: ['wearable', 'fullstack'], description: 'NeuroScope使用便携式脑电设备采集不同任务条件下的EEG信号，对Alpha、Beta等频段特征进行滤波、提取与比较，并将结果转化为实时可视化反馈。学生将设计专注、放松和认知负荷实验，分析个体差异与信号噪声，完成采集终端、数据处理程序、可视化界面及规范化实验报告。' },
-  { id: 'p05', title: '智能膝盖外骨骼康复系统', majors: ['机械工程', '生物医学工程', '机器人工程'], campIds: ['robot', 'wearable'], description: '本课题面向膝关节术后或运动损伤人群的辅助训练需求，设计轻量化膝部外骨骼结构，利用角度、压力或肌电传感器识别屈伸状态，并通过电机或弹性助力机构提供分级辅助。学生将开展人体工学尺寸分析、机械结构建模、驱动控制、限位保护与步态测试，最终完成可演示原型及康复训练数据界面。' },
-  { id: 'p06', title: '低成本灵巧仿生手自主控制系统', majors: ['机器人工程', '机械工程', '人工智能'], campIds: ['robot', 'wearable'], description: '本课题采用3D打印结构、腱绳传动和低成本舵机构建多指执行平台，并融合视觉、语音或肌电输入实现抓取意图识别。学生将完成手指关节建模、驱动布局、传感反馈、抓取策略与自主控制程序，通过不同形状和材质物体测试抓取稳定性、响应速度与成本效率。' },
-  { id: 'p07', title: '宝可梦场景智能体与NPC社会行为研究', majors: ['人工智能', '计算机科学', '游戏设计'], campIds: ['agent', 'fullstack'], description: '本课题以开放式宝可梦风格场景为实验环境，研究大语言模型智能体如何驱动NPC形成记忆、目标、关系和群体行为。学生将设计角色人格与世界规则，搭建长期记忆、任务规划、对话生成和社会关系模块，并记录不同提示策略下的行为变化，最终形成可交互场景、NPC智能体系统与实验分析报告。' },
-  { id: 'p08', title: '自供电火灾逃生指示地砖系统', majors: ['电子工程', '能源与动力工程', '安全工程'], campIds: ['wearable', 'fullstack'], description: '本课题面向商场断电、烟雾遮挡和人群疏散路径动态变化等场景，设计利用行人踩踏收集压电能量的智能指示地砖。系统结合温度、烟雾和人流传感节点判断风险区域，并通过分布式灯光箭头动态调整逃生方向。学生将完成能量采集电路、低功耗通信、地砖结构、路径控制与场景测试。' },
-  { id: 'p09', title: '宠物行为健康监测项圈系统', majors: ['电子工程', '人工智能', '动物科学'], campIds: ['perception', 'wearable'], description: '本课题设计集成加速度计、陀螺仪、温度与麦克风的智能项圈，在边缘端识别抓挠、甩头、咳嗽、吠叫和活动下降等行为信号。学生将完成传感数据同步、音频特征提取、轻量模型训练、低功耗硬件与移动端展示，并通过不同宠物和环境开展测试。' },
-  { id: 'p10', title: '毫米波雷达预警智能骑行风镜', majors: ['电子工程', '交通工程', '工业设计'], campIds: ['perception', 'wearable'], description: '本课题针对骑行者后方车辆接近难感知、明暗环境切换时视线适应滞后的问题，设计集成后置毫米波雷达与快速调光镜片的智能骑行风镜。系统判断目标距离、相对速度和碰撞风险，以灯光、声音或振动进行分级提醒，并根据环境照度自动调节透光率。' },
-  { id: 'p11', title: '多源感知智能导盲避障盲杖', majors: ['人工智能', '生物医学工程', '机器人工程'], campIds: ['perception', 'wearable'], description: '本课题融合摄像头、超声波、惯性测量与距离传感信息，建立分层避障和场景识别逻辑。系统通过不同位置、频率的振动及简短语音传递方向与风险等级，减少信息过载。学生将完成传感融合、目标识别、盲杖结构、反馈编码及模拟道路测试。' },
-  { id: 'p12', title: '模块化多模态提醒智能药盒', majors: ['生物医学工程', '电子工程', '工业设计'], campIds: ['wearable', 'fullstack'], description: '本课题面向老年人、慢病患者容易漏服、错服的问题，设计可拆换的模块化分仓药盒，并结合重量、开合或光电传感判断取药状态。系统通过灯光、语音、振动和手机端进行分级提醒。学生将完成人机需求调研、结构建模、嵌入式控制、提醒逻辑和可用性测试。' },
-  { id: 'p13', title: '自驱动太阳能海水淡化系统', majors: ['环境工程', '材料科学与工程', '能源与动力工程'], campIds: ['robot', 'drone'], description: '本课题利用透明亚克力腔体形成微型温室效应，并通过高吸光界面材料强化太阳能光热蒸发。水汽在倾斜冷凝面汇集后自动流入储水区，实现无需外部电源的海水淡化。学生将比较不同材料、结构角度和环境条件下的产水率、盐截留率与热效率。' },
-  { id: 'p14', title: '潜水员水下互联通信系统', majors: ['通信工程', '海洋工程', '电子工程'], campIds: ['wearable', 'perception'], description: '本课题研究短距离声学调制与低码率水下数据通信方案。终端结合深度、姿态、温度和紧急按键，将位置状态或预设短报文编码后发送，并通过确认与重传提高可靠性。学生将完成声学收发电路、通信协议、低功耗终端、传感数据融合及水池测试。' },
-  { id: 'p15', title: '半虚拟键盘触觉交互系统', majors: ['人机交互', '计算机科学', '电子工程'], campIds: ['perception', 'fullstack'], description: '本课题探索在无实体键帽或轻量投影界面上实现接近真实键盘的输入体验。系统利用摄像头识别手指位置与敲击动作，结合压力、振动或局部声学反馈确认按键，并通过校准算法减少遮挡、误触和视角变化带来的偏差。' },
-  { id: 'p16', title: 'ESP32-S3 边缘AI导盲辅助系统', majors: ['电子工程', '人工智能', '生物医学工程'], campIds: ['wearable', 'perception'], description: '本课题以ESP32-S3为核心构建低成本、低功耗的便携式导盲辅助终端，在设备本地运行轻量视觉或音频模型，识别门、楼梯、车辆及常见障碍，并在无网络环境下通过振动和语音提供即时提示。学生将完成模型压缩部署、嵌入式程序、功耗管理和佩戴结构设计。' },
-  { id: 'p17', title: '模块化自适应防汛装置', majors: ['材料科学与工程', '土木工程', '机械工程'], campIds: ['robot', 'drone'], description: '本课题利用聚丙烯酸钠吸水膨胀特性设计轻量化模块单元。装置遇水后快速增重并形成连续挡水结构，可通过卡扣适配不同宽度和地面起伏。学生将研究材料配比、吸水倍率、膨胀速度、外层织物和连接结构，并开展渗漏、承压、重复使用及部署效率测试。' },
-  { id: 'p18', title: '天驿计划：未来低空物流无人运输系统', majors: ['航空航天工程', '自动化', '交通运输工程'], campIds: ['drone', 'perception'], description: '天驿计划研究由无人机、智能起降站和任务调度平台组成的低空运输系统。学生将分析载重、航程、能耗、航线安全和天气影响，设计货舱结构、动力配置、多源感知与自主避障方案，并在仿真或缩比平台上完成调度测试。' },
-  { id: 'p19', title: '仿生机械尾部运动增强系统', majors: ['机械工程', '机器人工程', '生物医学工程'], campIds: ['robot', 'wearable'], description: '本课题研究仿生机械尾部能否通过姿态调节、动态配重和交互反馈辅助人体完成平衡训练或增强动作表达。系统结合惯性测量单元与表面肌电信号识别躯干运动和肌肉意图，驱动多关节尾部产生协同摆动。学生将完成仿生结构、传动机构、肌电采集与安全限位设计。' },
-  { id: 'p20', title: '视觉手势与音乐映射情绪调节系统', majors: ['人工智能', '音乐科技', '人机交互'], campIds: ['perception', 'fullstack'], description: '本课题利用摄像头识别手势轨迹、速度、幅度与身体姿态，并将动作实时映射为旋律、节奏、音色和视觉反馈。学生将设计不同情绪目标下的交互规则，完成姿态识别、音乐生成、实时界面和用户实验，形成兼具技术验证与人文关怀的交互原型。' },
+  { id: 'p01', title: 'ProShot：投篮动作量化装置', majors: ['运动人体科学', '人工智能', '生物医学工程'], campIds: ['perception', 'wearable'], competitionIds: ['iena', 'bpa', 'icc'], poster: 'project-posters/p01.jpg', description: 'ProShot面向篮球训练中动作评价依赖教练经验、训练数据难以沉淀的问题，利用惯性传感器或视觉识别采集出手角度、手腕速度、身体姿态与命中结果，建立投篮动作量化模型，并通过移动端界面生成即时反馈与训练趋势。学生将完成传感采集、动作特征提取、评分算法和原型测试，最终形成可用于个人训练及教练评估的智能运动辅助装置。' },
+  { id: 'p02', title: 'The Last Library of Human Mistakes', majors: ['人工智能', '计算机科学', '数据科学'], campIds: ['agent', 'fullstack'], competitionIds: ['bpa', 'diamond', 'icc', 'iena'], poster: 'project-posters/p02.jpg', description: 'The Last Library of Human Mistakes是一套以“失败经验能否成为可检索知识”为核心的AI数字档案系统。项目收集经匿名处理的学习、工程或决策失误案例，利用结构化标签、语义检索与大语言模型智能体进行归因分析，帮助用户发现相似错误、理解形成机制并获得改进建议。学生将完成数据规范、知识库、RAG问答、交互界面以及偏差与隐私测试。' },
+  { id: 'p03', title: 'MindBeat：智能空灵鼓认知训练系统', majors: ['音乐科技', '生物医学工程', '认知科学'], campIds: ['wearable', 'fullstack'], competitionIds: ['icc', 'iena', 'bpa'], poster: 'project-posters/p03.jpg', description: 'MindBeat将空灵鼓的低门槛演奏方式与认知训练结合，通过压力、敲击位置和节奏传感记录用户的演奏行为，并设计注意力、工作记忆与节奏模仿等互动任务。系统根据反应时间、节奏稳定性和任务完成度生成个性化反馈，探索音乐交互对青少年或特殊需求群体认知参与的作用。学生将完成硬件采集、音乐映射、训练界面与小规模用户测试。' },
+  { id: 'p04', title: 'NeuroScope：基于脑电信号的注意力与认知状态可视化研究实验', majors: ['神经科学', '生物医学工程', '人工智能'], campIds: ['wearable', 'fullstack'], competitionIds: ['icc', 'diamond', 'iena', 'bpa'], poster: 'project-posters/p04.jpg', description: 'NeuroScope围绕注意力状态难以被直观观察的问题，使用便携式脑电设备采集不同任务条件下的EEG信号，对Alpha、Beta等频段特征进行滤波、提取与比较，并将结果转化为实时可视化反馈。学生将设计专注、放松和认知负荷实验，分析个体差异与信号噪声，完成采集终端、数据处理程序、可视化界面及规范化实验报告，理解脑机接口研究的边界。' },
+  { id: 'p05', title: '智能膝盖外骨骼康复系统设计与实现', majors: ['机械工程', '生物医学工程', '机器人工程'], campIds: ['robot', 'wearable'], competitionIds: ['iena', 'icc', 'bpa'], poster: 'project-posters/p05.jpg', description: '本课题面向膝关节术后或运动损伤人群的辅助训练需求，设计轻量化膝部外骨骼结构，利用角度、压力或肌电传感器识别屈伸状态，并通过电机或弹性助力机构提供分级辅助。学生将开展人体工学尺寸分析、机械结构建模、驱动控制、限位保护与步态测试，重点验证佩戴舒适性、运动范围和控制响应，最终完成可演示原型及康复训练数据界面。' },
+  { id: 'p06', title: '低成本灵巧仿生手的多模态交互与自主控制系统', majors: ['机器人工程', '机械工程', '人工智能'], campIds: ['robot', 'wearable'], competitionIds: ['iena', 'icc', 'bpa'], poster: 'project-posters/p06.jpg', description: '本课题聚焦高自由度仿生手成本高、控制复杂的问题，采用3D打印结构、腱绳传动和低成本舵机构建多指执行平台，并融合视觉、语音或肌电输入实现抓取意图识别。学生将完成手指关节建模、驱动布局、传感反馈、抓取策略与自主控制程序，通过不同形状和材质物体测试抓取稳定性、响应速度与成本效率，形成可迭代的仿生手原型和控制系统。' },
+  { id: 'p07', title: '宝可梦场景智能体交互与NPC社会行为研究系统', majors: ['人工智能', '计算机科学', '游戏设计'], campIds: ['agent', 'fullstack'], competitionIds: ['bpa', 'iena'], poster: 'project-posters/p07.jpg', description: '本课题以开放式宝可梦风格场景为实验环境，研究大语言模型智能体如何驱动NPC形成记忆、目标、关系和群体行为。学生将设计角色人格与世界规则，搭建长期记忆、任务规划、对话生成和社会关系模块，并记录不同提示策略下的行为变化。项目最终形成可交互场景、NPC智能体系统与实验分析报告，用于探讨生成式AI在游戏叙事和虚拟社会模拟中的应用边界。' },
+  { id: 'p08', title: '基于压电能量收集与分布式感知的商场自供电火灾逃生指示地砖系统', majors: ['电子工程', '能源与动力工程', '安全工程'], campIds: ['wearable', 'fullstack'], competitionIds: ['iena', 'icc', 'diamond', 'bpa'], poster: 'project-posters/p08.jpg', description: '本课题面向商场断电、烟雾遮挡和人群疏散路径动态变化等火灾场景，设计能够利用行人踩踏收集压电能量的智能指示地砖。系统结合温度、烟雾和人流传感节点判断风险区域，并通过分布式灯光箭头动态调整逃生方向。学生将完成能量采集电路、低功耗通信、地砖结构、路径控制与场景测试，评估发电效率、指示可见度和系统可靠性。' },
+  { id: 'p09', title: '基于多传感器融合与边缘音频识别的宠物行为健康监测项圈系统', majors: ['电子工程', '人工智能', '动物科学'], campIds: ['perception', 'wearable'], competitionIds: ['bpa', 'diamond', 'iena', 'icc'], poster: 'project-posters/p09.jpg', description: '本课题面向宠物异常行为难以及时发现的问题，设计集成加速度计、陀螺仪、温度与麦克风的智能项圈，在边缘端识别抓挠、甩头、咳嗽、吠叫和活动下降等行为信号。学生将完成传感数据同步、音频特征提取、轻量模型训练、低功耗硬件与移动端展示，并通过不同宠物和环境开展测试，评估识别准确率、续航表现及健康预警的实际可用性。' },
+  { id: 'p10', title: '基于后置毫米波雷达预警与自适应快速调光的智能骑行风镜系统', majors: ['电子工程', '交通工程', '工业设计'], campIds: ['perception', 'wearable'], competitionIds: ['iena', 'icc', 'diamond', 'bpa'], poster: 'project-posters/p10.jpg', description: '本课题针对骑行者后方车辆接近难感知、进出隧道或明暗环境切换时视线适应滞后的问题，设计集成后置毫米波雷达与快速调光镜片的智能骑行风镜。系统判断目标距离、相对速度和碰撞风险，以灯光、声音或振动进行分级提醒，并根据环境照度自动调节透光率。学生将完成传感融合、风险算法、镜架结构、人机交互和道路场景验证。' },
+  { id: 'p11', title: '基于多源传感器融合与触觉声学反馈的智能导盲避障盲杖系统', majors: ['人工智能', '生物医学工程', '机器人工程'], campIds: ['perception', 'wearable'], competitionIds: ['icc', 'iena', 'diamond', 'bpa'], poster: 'project-posters/p11.jpg', description: '本课题面向视障者在复杂道路中识别台阶、悬空障碍和动态目标的需求，融合摄像头、超声波、惯性测量与距离传感信息，建立分层避障和场景识别逻辑。系统通过不同位置、频率的振动及简短语音传递方向与风险等级，减少信息过载。学生将完成传感融合、目标识别、盲杖结构、反馈编码及模拟道路测试，重点评估准确率、反应时间和使用负担。' },
+  { id: 'p12', title: '基于模块化多规格分仓与多模态提醒的智能药盒系统设计与实现', majors: ['生物医学工程', '电子工程', '工业设计'], campIds: ['wearable', 'fullstack'], competitionIds: ['icc', 'diamond', 'iena', 'bpa'], poster: 'project-posters/p12.jpg', description: '本课题面向老年人、慢病患者多种药品尺寸不同且容易漏服、错服的问题，设计可拆换的模块化分仓药盒，并结合重量、开合或光电传感判断取药状态。系统通过灯光、语音、振动和手机端进行分级提醒，对未按时取药或重复开仓给出提示。学生将完成人机需求调研、结构建模、嵌入式控制、提醒逻辑和可用性测试，形成可运行原型与服药记录界面。' },
+  { id: 'p13', title: '基于亚克力微型温室效应与界面光热转化的自驱动海水淡化系统', majors: ['环境工程', '材料科学与工程', '能源与动力工程'], campIds: ['robot', 'drone'], competitionIds: ['icc', 'iena', 'diamond', 'bpa'], poster: 'project-posters/p13.jpg', description: '本课题面向缺乏稳定电力和淡水来源的海岛或应急场景，利用透明亚克力腔体形成微型温室效应，并通过高吸光界面材料强化太阳能光热蒸发。水汽在倾斜冷凝面汇集后自动流入储水区，实现无需外部电源的海水淡化。学生将比较不同材料、结构角度和环境条件下的产水率、盐截留率与热效率，完成装置原型、实验数据和优化方案。' },
+  { id: 'p14', title: '基于水下声学调制与多模态传感的潜水员互联通信系统', majors: ['通信工程', '海洋工程', '电子工程'], campIds: ['wearable', 'perception'], competitionIds: ['iena', 'icc', 'bpa'], poster: 'project-posters/p14.jpg', description: '本课题针对水下无线电衰减严重、潜水员之间难以稳定传递关键信息的问题，研究短距离声学调制与低码率数据通信方案。终端结合深度、姿态、温度和紧急按键，将位置状态或预设短报文编码后发送，并通过确认与重传提高可靠性。学生将完成声学收发电路、通信协议、低功耗终端、传感数据融合及水池测试，评估误码率、传输距离和响应时延。' },
+  { id: 'p15', title: '基于多模态触觉反馈与计算机视觉的半虚拟键盘交互系统', majors: ['人机交互', '计算机科学', '电子工程'], campIds: ['perception', 'fullstack'], competitionIds: ['iena', 'icc', 'diamond', 'bpa'], poster: 'project-posters/p15.jpg', description: '本课题探索在无实体键帽或轻量投影界面上实现接近真实键盘的输入体验。系统利用摄像头识别手指位置与敲击动作，结合压力、振动或局部声学反馈确认按键，并通过校准算法减少遮挡、误触和视角变化带来的偏差。学生将完成视觉追踪、坐标映射、触觉模块、输入界面及打字实验，对输入速度、识别准确率、学习成本与便携性进行系统评估。' },
+  { id: 'p16', title: '基于ESP32-S3与边缘AI的智能导盲辅助系统', majors: ['电子工程', '人工智能', '生物医学工程'], campIds: ['wearable', 'perception'], competitionIds: ['icc', 'iena', 'diamond', 'bpa'], poster: 'project-posters/p16.jpg', description: '本课题以ESP32-S3为核心构建低成本、低功耗的便携式导盲辅助终端，在设备本地运行轻量视觉或音频模型，识别门、楼梯、车辆及常见障碍，并在无网络环境下通过振动和语音提供即时提示。学生将完成摄像头与传感器接入、模型压缩部署、嵌入式程序、功耗管理和佩戴结构设计，通过多场景测试评估识别准确率、响应时延、续航及使用安全性。' },
+  { id: 'p17', title: '基于聚丙烯酸钠的模块化自适应防汛装置设计', majors: ['材料科学与工程', '土木工程', '机械工程'], campIds: ['robot', 'drone'], competitionIds: ['iena', 'icc', 'diamond', 'bpa'], poster: 'project-posters/p17.jpg', description: '本课题面向城市商铺、地下空间和社区入口在突发积水时传统沙袋运输慢、储存占地大的问题，利用聚丙烯酸钠吸水膨胀特性设计轻量化模块单元。装置遇水后快速增重并形成连续挡水结构，可通过卡扣适配不同宽度和地面起伏。学生将研究材料配比、吸水倍率、膨胀速度、外层织物和连接结构，并开展渗漏、承压、重复使用及部署效率测试。' },
+  { id: 'p18', title: '天驿计划：未来低空物流无人运输系统研究', majors: ['航空航天工程', '自动化', '交通运输工程'], campIds: ['drone', 'perception'], competitionIds: ['diamond', 'bpa', 'icc', 'iena'], poster: 'project-posters/p18.jpg', description: '天驿计划聚焦校园、园区或偏远地区短距离物流效率低的问题，研究由无人机、智能起降站和任务调度平台组成的低空运输系统。学生将分析载重、航程、能耗、航线安全和天气影响，设计货舱结构、动力配置、多源感知与自主避障方案，并在仿真或缩比平台上完成调度测试。项目最终形成运输原型、控制系统、运营场景分析及安全风险评估。' },
+  { id: 'p19', title: '基于人体运动感知与表面肌电交互的仿生机械尾部运动增强系统研究', majors: ['机械工程', '机器人工程', '生物医学工程'], campIds: ['robot', 'wearable'], competitionIds: ['iena', 'icc', 'bpa'], description: '本课题研究仿生机械尾部能否通过姿态调节、动态配重和交互反馈辅助人体完成平衡训练或增强动作表达。系统结合惯性测量单元与表面肌电信号识别躯干运动和肌肉意图，驱动多关节尾部产生协同摆动。学生将完成仿生结构、传动机构、肌电采集、控制算法、佩戴系统和安全限位设计，并通过静态平衡与动态动作实验评估响应速度、稳定性和人体负担。' },
+  { id: 'p20', title: '基于视觉手势识别与实时音乐映射的青少年主动式情绪调节交互系统研究', majors: ['人工智能', '音乐科技', '人机交互'], campIds: ['perception', 'fullstack'], competitionIds: ['bpa', 'icc', 'iena'], description: '本课题面向青少年在压力或焦虑状态下缺少低门槛主动表达方式的问题，利用摄像头识别手势轨迹、速度、幅度与身体姿态，并将动作实时映射为旋律、节奏、音色和视觉反馈。学生将设计不同情绪目标下的交互规则，完成姿态识别、音乐生成、实时界面和用户实验，观察使用前后的主观情绪、自我效能与参与度变化，形成兼具技术验证与人文关怀的交互原型。' },
 ]
 
 const standardCampOutputs = [
@@ -185,14 +187,8 @@ export const competitions: Competition[] = [
   },
 ]
 
-export const conradProjectIds = new Set(['p01', 'p03', 'p05', 'p08', 'p11', 'p13', 'p17', 'p20'])
-export const softwareOnlyProjectIds = new Set(['p02', 'p07'])
-
 export const majors = Array.from(new Set(projects.flatMap((project) => project.majors))).sort((a, b) => a.localeCompare(b, 'zh-CN'))
 
 export function compatibleCompetitionIds(project: Project) {
-  const ids = ['icc', 'diamond', 'blueocean', 'bpa', 'ctb', 'bpc']
-  if (!softwareOnlyProjectIds.has(project.id)) ids.splice(1, 0, 'iena')
-  if (conradProjectIds.has(project.id)) ids.unshift('conrad')
-  return ids
+  return project.competitionIds
 }

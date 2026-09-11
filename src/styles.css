@@ -332,6 +332,8 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 .project-preview-page > header .round-button { border-color: rgba(255,255,255,.24); background: rgba(255,255,255,.08); color: #fff; }
 .project-poster-card { position: relative; min-height: min(72dvh, 720px); margin: 20px 0 16px; border-radius: 24px; flex: 1; background: #302b37; overflow: hidden; }
 .project-poster-card > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.project-poster-card.has-official-poster { min-height: 0; flex: none; background: transparent; }
+.project-poster-card.has-official-poster > img { position: relative; height: auto; object-fit: contain; }
 .project-poster-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(18,15,22,.05) 24%, rgba(18,15,22,.24) 48%, rgba(18,15,22,.96) 100%); }
 .project-poster-content { position: absolute; inset: auto 0 0; padding: 34px 26px 28px; color: #fff; }
 .project-poster-content > p { margin: 0 0 13px; color: #cdbdff; font-size: 9px; font-weight: 700; letter-spacing: .15em; }

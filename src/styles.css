@@ -134,7 +134,8 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 .sheet { position: relative; width: min(100%, 680px); max-height: min(84dvh, 760px); padding: 34px 22px max(22px, env(safe-area-inset-bottom)); border-radius: 26px 26px 0 0; background: #fff; overflow: auto; }
 .sheet-handle { position: absolute; top: 10px; left: 50%; width: 38px; height: 4px; border-radius: 4px; transform: translateX(-50%); background: #ddd7e2; }
 .sheet-close { position: absolute; top: 20px; right: 20px; }
-.sheet h2 { padding-right: 48px; margin: 0 0 16px; font-size: clamp(27px, 8vw, 38px); line-height: 1.2; letter-spacing: -.04em; }
+.sheet-title-row { min-height: 72px; padding-right: 46px; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.sheet h2 { margin: 0 0 16px; font-size: clamp(27px, 8vw, 38px); line-height: 1.2; letter-spacing: -.04em; }
 .sheet-description { margin: 28px 0; color: #605b65; font-size: 14px; line-height: 1.9; }
 .sheet .primary-button { position: sticky; bottom: 0; }
 .sheet-actions { position: sticky; bottom: 0; display: grid; grid-template-columns: 1fr; gap: 8px; background: #fff; }
@@ -165,14 +166,24 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 .answer-list button svg { width: 15px; color: #9b96a0; }
 .skip-button { align-self: center; margin: 12px auto; padding: 10px; border: 0; border-bottom: 1px solid #c9c4ce; background: transparent; color: #827d87; font-size: 11px; cursor: pointer; }
 
-.assessment-tip, .assessment-invite { margin: 0 20px 22px; padding: 16px; border: 0; border-radius: 16px; display: grid; grid-template-columns: 28px 1fr 18px; gap: 10px; align-items: center; background: var(--purple-soft); color: var(--ink); text-align: left; }
+.assessment-tip, .assessment-invite { margin: 0 20px 22px; padding: 16px; border: 0; border-radius: 16px; display: grid; grid-template-columns: 28px 1fr 18px; gap: 10px; align-items: center; background: #fff3df; color: var(--ink); text-align: left; }
 .assessment-tip { grid-template-columns: 28px 1fr; }
-.assessment-tip > svg, .assessment-invite > svg { width: 19px; color: var(--purple); }
+.assessment-tip > svg, .assessment-invite > svg { width: 19px; color: #c76a13; }
 .assessment-tip div, .assessment-invite div { display: grid; gap: 4px; }
 .assessment-tip b, .assessment-invite b { font-size: 12px; }
 .assessment-tip span, .assessment-invite span { color: #756e80; font-size: 10px; line-height: 1.5; }
 .assessment-invite { width: calc(100% - 40px); cursor: pointer; }
 .assessment-invite > svg:last-child { width: 15px; color: #8b8492; }
+.camp-value-card, .competition-value-card { position: relative; margin: 0 20px 18px; padding: 22px 20px; border-radius: 21px; color: #fff; overflow: hidden; }
+.camp-value-card { background: radial-gradient(circle at 92% 10%, rgba(165,132,255,.55), transparent 36%), linear-gradient(145deg, #20182f, #17151b 72%); }
+.competition-value-card { background: radial-gradient(circle at 100% 0, rgba(111,222,185,.42), transparent 38%), linear-gradient(145deg, #112b2a, #171c1c 76%); }
+.camp-value-card::after, .competition-value-card::after { content: ''; position: absolute; right: -54px; bottom: -74px; width: 150px; height: 150px; border: 1px solid rgba(255,255,255,.16); border-radius: 50%; }
+.camp-value-card > span, .competition-value-card > span { color: #cdbdff; font-size: 9px; font-weight: 700; letter-spacing: .1em; }
+.competition-value-card > span { color: #89e2c3; }
+.camp-value-card h2, .competition-value-card h2 { max-width: 440px; margin: 10px 0; font-size: 21px; line-height: 1.35; letter-spacing: -.025em; }
+.camp-value-card p, .competition-value-card p { position: relative; z-index: 1; margin: 0; color: rgba(255,255,255,.7); font-size: 11px; line-height: 1.8; }
+.camp-value-card > div, .competition-value-card > div { position: relative; z-index: 1; margin-top: 16px; display: flex; flex-wrap: wrap; gap: 6px; }
+.camp-value-card i, .competition-value-card i { padding: 6px 8px; border: 1px solid rgba(255,255,255,.16); border-radius: 999px; background: rgba(255,255,255,.07); color: rgba(255,255,255,.82); font-size: 8px; font-style: normal; }
 .camp-skip-note { margin: 0 20px 22px; padding: 15px 16px; border: 1px solid var(--line); border-radius: 16px; display: grid; grid-template-columns: 25px 1fr; gap: 10px; align-items: center; background: #fff; }
 .camp-skip-note > svg { width: 17px; color: var(--purple); }
 .camp-skip-note div { display: grid; gap: 3px; }
@@ -214,12 +225,9 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 .camp-outputs ul { margin: 0; padding: 0; display: grid; gap: 10px; list-style: none; }
 .camp-outputs li { display: flex; align-items: center; gap: 8px; color: #5f5964; font-size: 11px; }
 .camp-outputs li svg { width: 14px; color: var(--purple); }
-.camp-qr { margin: 0 0 26px; padding: 14px; border: 1px solid var(--line); border-radius: 17px; display: grid; grid-template-columns: 88px 1fr; gap: 14px; align-items: center; background: #fff; }
-.camp-qr > img { width: 88px; height: 88px; border-radius: 8px; }
-.camp-qr > div { display: grid; gap: 5px; }
-.camp-qr svg { width: 16px; color: var(--purple); }
-.camp-qr b { font-size: 11px; }
-.camp-qr span { color: #8b8490; font-size: 8px; line-height: 1.5; }
+.camp-title-qr { flex: none; width: 58px; display: grid; justify-items: center; gap: 3px; }
+.camp-title-qr img { display: block; width: 54px; height: 54px; border: 1px solid var(--line); border-radius: 7px; }
+.camp-title-qr span { color: #8b8490; font-size: 7px; white-space: nowrap; }
 
 .selection-count { margin: 0 20px 20px; padding: 17px 18px; border-radius: 16px; background: var(--ink); color: #fff; }
 .selection-count b { color: #aa86ff; font-size: 25px; }
@@ -231,6 +239,11 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 .competition-info { min-width: 0; padding: 0; border: 0; display: grid; grid-template-columns: 76px 1fr; gap: 13px; align-items: center; background: transparent; text-align: left; cursor: pointer; }
 .competition-logo { width: 76px; height: 64px; padding: 8px; border: 1px solid #ebe8ee; border-radius: 14px; display: grid; place-items: center; background: #fff; box-shadow: 0 3px 12px rgba(31, 23, 40, .04); }
 .competition-logo img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.bpc-wordmark { display: grid; justify-items: center; gap: 2px; line-height: 1; text-align: center; }
+.bpc-wordmark b { color: #2d1768; font-family: Manrope, sans-serif; font-size: 23px; letter-spacing: -.06em; }
+.bpc-wordmark small { color: #796d92; font-size: 5px; font-weight: 700; letter-spacing: .08em; white-space: nowrap; }
+.bpc-wordmark--large b { font-size: 34px; }
+.bpc-wordmark--large small { font-size: 7px; line-height: 1.25; }
 .competition-copy { min-width: 0; display: grid; gap: 7px; }
 .competition-copy b { font-size: 13px; line-height: 1.4; }
 .competition-copy small { color: #85808a; font-size: 10px; line-height: 1.55; }
@@ -272,24 +285,26 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 .result-heading { padding: 34px 20px 30px; }
 .result-heading h1 { margin: 0; font-size: clamp(40px, 12vw, 64px); line-height: 1.04; letter-spacing: -.055em; }
 .result-heading > p:last-child { max-width: 380px; margin: 18px 0 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
-.student-summary { margin: 0 20px 14px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 16px; display: grid; grid-template-columns: 27px 1fr; gap: 9px; align-items: center; background: #fff; }
-.student-summary > svg { width: 18px; color: var(--purple); }
+.student-summary { margin: 0 20px 14px; padding: 19px 20px; border: 1px solid #d9ccff; border-radius: 18px; display: flex; gap: 14px; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #f5f0ff, #fff); }
 .student-summary > div { display: grid; gap: 3px; }
-.student-summary span { color: #918a96; font-size: 8px; }
-.student-summary b { font-size: 12px; }
+.student-summary span { color: #8b7ca7; font-size: 8px; letter-spacing: .08em; }
+.student-summary b { font-size: 24px; letter-spacing: -.04em; }
+.student-summary strong { padding: 8px 10px; border-radius: 10px; background: var(--purple); color: #fff; font-size: 10px; }
 .route-card { margin: 0 20px 16px; padding: 8px 20px; border-radius: 22px; background: var(--ink); color: #fff; }
-.route-card > div { padding: 22px 0; display: grid; grid-template-columns: 30px 1fr; gap: 4px 10px; }
+.route-card > div { padding: 22px 0; display: grid; grid-template-columns: 30px 1fr; gap: 5px 10px; }
 .route-card > div + div { border-top: 1px solid #39353e; }
-.route-card i { grid-row: 1 / 3; color: #a885ff; font-size: 11px; font-style: normal; font-weight: 700; }
+.route-card i { grid-row: 1 / 4; color: #a885ff; font-size: 11px; font-style: normal; font-weight: 700; }
 .route-card span { color: #948e9c; font-size: 9px; }
 .route-card b { font-size: 13px; line-height: 1.55; }
-.assessment-result { margin: 0 20px 16px; padding: 18px; border-radius: 18px; display: grid; grid-template-columns: 28px 1fr; gap: 10px; background: var(--purple-soft); }
-.assessment-result > svg { width: 18px; color: var(--purple); }
+.route-card p { margin: 3px 0 0; display: -webkit-box; overflow: hidden; color: #aaa4af; font-size: 9px; line-height: 1.65; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+.assessment-result { margin: 0 20px 16px; padding: 18px; border-radius: 18px; display: grid; grid-template-columns: 28px 1fr; gap: 10px; background: #fff0dc; }
+.assessment-result > svg { width: 18px; color: #c66a16; }
 .assessment-result div { display: grid; gap: 4px; }
 .assessment-result span { color: #81788d; font-size: 9px; }
 .assessment-result b { font-size: 14px; }
 .assessment-result small { color: #6f6876; font-size: 10px; line-height: 1.5; }
-.result-invite { margin-top: 0; }
+.result-invite { margin-top: 0; background: #eaf7f1; }
+.result-invite > svg { color: #21815f; }
 .export-block { margin: 42px 20px 0; padding-top: 30px; border-top: 1px solid var(--line); }
 .export-block h2 { margin: 0; font-size: 24px; letter-spacing: -.03em; }
 .export-block p { margin: 9px 0 20px; color: var(--muted); font-size: 11px; }
@@ -297,19 +312,20 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
 .edit-route { margin: 22px auto 0; padding: 8px; border: 0; display: flex; align-items: center; gap: 6px; background: transparent; color: #827c87; font-size: 11px; cursor: pointer; }
 .edit-route svg { width: 14px; }
 
-.poster-backdrop { position: fixed; z-index: 90; inset: 0; padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom)); display: grid; place-items: center; background: rgba(23,21,27,.72); backdrop-filter: blur(14px); }
-.poster-view { width: min(100%, 460px); max-height: 100%; padding: 14px; border-radius: 24px; background: #fff; overflow: auto; }
-.poster-view header { padding: 3px 2px 12px; display: flex; align-items: center; justify-content: space-between; }
-.poster-view header > div { display: grid; gap: 3px; }
-.poster-view header b { font-size: 13px; }
-.poster-view header span { color: #89838e; font-size: 9px; }
-.poster-view img { display: block; width: 100%; border-radius: 15px; box-shadow: 0 8px 30px rgba(30,20,44,.14); touch-action: auto; -webkit-touch-callout: default; }
-.poster-actions { padding: 12px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.poster-actions button { min-height: 48px; border: 1px solid var(--line); border-radius: 13px; display: flex; align-items: center; justify-content: center; gap: 7px; background: #fff; font-size: 11px; font-weight: 600; cursor: pointer; }
-.poster-actions button:last-child { border-color: var(--purple); background: var(--purple); color: #fff; }
-.poster-actions svg { width: 15px; }
-.notice { margin: 10px 2px 0; display: flex; align-items: center; gap: 6px; color: #7d7684; font-size: 9px; }
-.notice svg { width: 13px; }
+.poster-backdrop { position: fixed; z-index: 90; inset: 0; padding: max(20px, env(safe-area-inset-top)) 18px max(20px, env(safe-area-inset-bottom)); display: grid; place-items: center; background: rgba(8,7,10,.94); backdrop-filter: blur(16px); }
+.poster-close { position: fixed; z-index: 3; top: max(18px, env(safe-area-inset-top)); right: 18px; width: 42px; height: 42px; padding: 0; border: 1px solid rgba(255,255,255,.2); border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.1); color: #fff; cursor: pointer; }
+.poster-close svg { width: 17px; }
+.poster-guide-stage { position: relative; width: min(76vw, 390px); max-height: calc(100dvh - 50px); }
+.poster-guide-stage > img { display: block; width: 100%; max-height: calc(100dvh - 50px); border-radius: 17px; object-fit: contain; box-shadow: 0 22px 80px rgba(0,0,0,.62); touch-action: auto; -webkit-touch-callout: default; }
+.share-coach { position: absolute; z-index: 2; top: 38.2%; left: 61.8%; pointer-events: none; }
+.ripple-target { position: absolute; top: 0; left: 0; width: 26px; height: 26px; transform: translate(-50%, -50%); }
+.ripple-target i, .ripple-target b { position: absolute; inset: 0; border: 2px solid #fff; border-radius: 50%; animation: share-ripple 1.8s ease-out infinite; }
+.ripple-target i:nth-child(2) { animation-delay: .6s; }
+.ripple-target b { inset: 9px; border: 0; background: #fff; box-shadow: 0 0 18px rgba(255,255,255,.95); animation: none; }
+.share-bubble { position: absolute; top: 20px; right: -22px; width: 174px; padding: 12px 14px; border-radius: 14px 4px 14px 14px; display: grid; gap: 4px; background: #fff; color: var(--ink); box-shadow: 0 10px 34px rgba(0,0,0,.28); }
+.share-bubble b { font-size: 12px; }
+.share-bubble span { color: #746e79; font-size: 8px; line-height: 1.5; }
+@keyframes share-ripple { 0% { opacity: .95; transform: scale(.45); } 80%, 100% { opacity: 0; transform: scale(2.35); } }
 .project-preview-backdrop { position: fixed; z-index: 95; inset: 0; background: #f2eff6; overflow: auto; }
 .project-preview-page { width: min(100%, 680px); min-height: 100dvh; margin: 0 auto; padding: max(18px, env(safe-area-inset-top)) 18px max(24px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; background: #17151b; }
 .project-preview-page > header { min-height: 48px; display: flex; align-items: center; justify-content: space-between; color: #fff; }

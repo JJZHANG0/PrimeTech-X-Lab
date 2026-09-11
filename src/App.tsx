@@ -3,9 +3,11 @@ import { AnimatePresence, motion } from 'framer-motion'
 import {
   ArrowLeft,
   ArrowRight,
+  CalendarDays,
   Check,
   ChevronRight,
   Download,
+  ExternalLink,
   Info,
   LockKeyhole,
   RotateCcw,
@@ -21,6 +23,7 @@ import {
   majors,
   projects,
   type Camp,
+  type Competition,
   type Project,
 } from './data/catalog'
 
@@ -246,7 +249,7 @@ async function makePoster(project: Project, camp: Camp | null, competitionNames:
 
   card(472, '01', '研究课题', project.title, project.majors.slice(0, 3))
   card(806, '02', '技能营地', camp?.name ?? '已跳过营地', [camp?.output ?? '已有经验 · 直接推进课题'])
-  card(1140, '03', '竞赛方向', competitionNames.join('  ×  '))
+  card(1140, '03', '竞赛方向', competitionNames.length ? competitionNames.join('  ×  ') : '已跳过竞赛', competitionNames.length ? undefined : ['可稍后补充竞赛方向'])
 
   context.fillStyle = '#ece5fb'
   context.beginPath()
@@ -286,6 +289,7 @@ export default function App() {
   const [selectedCompetitionIds, setSelectedCompetitionIds] = useState<string[]>([])
   const [detailProject, setDetailProject] = useState<Project | null>(null)
   const [detailCamp, setDetailCamp] = useState<Camp | null>(null)
+  const [detailCompetition, setDetailCompetition] = useState<Competition | null>(null)
   const [quizIndex, setQuizIndex] = useState(0)
   const [quizAnswers, setQuizAnswers] = useState<number[]>([])
   const [quizReturn, setQuizReturn] = useState<'camp' | 'result'>('camp')
@@ -353,7 +357,7 @@ export default function App() {
   }
 
   const createPoster = async () => {
-    if (!selectedProject || selectedCompetitionIds.length !== 2) return
+    if (!selectedProject) return
     setPosterBusy(true)
     try {
       if (poster) URL.revokeObjectURL(poster.url)
@@ -491,39 +495,43 @@ export default function App() {
             </motion.section>
           )}
 
-          {screen === 'intro-competition' && <StepIntro eyebrow="第三步 · 成果舞台" title={<>最后，为成果<br />选择两个舞台</>} copy="我们会根据课题方向筛出适配竞赛。你只需要像选择套餐一样，从中选出两个。" action="开始选择竞赛" onContinue={() => setScreen('competition')} onBack={() => setScreen('camp')} />}
+          {screen === 'intro-competition' && <StepIntro eyebrow="第三步 · 成果舞台" title={<>最后，为成果<br />看看适合的舞台</>} copy="竞赛同样是可选项。你可以查看赛程、最多选择两个，也可以先跳过，专注把课题做好。" action="查看适配竞赛" onContinue={() => setScreen('competition')} onBack={() => setScreen('camp')} />}
 
           {screen === 'competition' && selectedProject && (
             <motion.section key="competition" className="planner" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }}>
               <StepHeader step={3} onReset={reset} />
-              <PageHeading eyebrow="第三步 · 选择竞赛" title="选择 2 项竞赛" copy="像选套餐一样，从适配方向中选两个。灰色选项暂不推荐。" />
-              <div className="selection-count"><b>{selectedCompetitionIds.length}</b><span>/ 2 已选择</span></div>
+              <PageHeading eyebrow="第三步 · 竞赛方向" title="最多选择 2 项" copy="点赛事名称查看介绍与时间线。竞赛不是必选项，也可以直接跳过。" />
+              <div className="selection-count"><b>{selectedCompetitionIds.length}</b><span>/ 2 已选择 · 可跳过</span></div>
               <div className="competition-list">
                 {competitions.map((competition) => {
                   const compatible = compatibleCompetitions.includes(competition.id)
                   const selected = selectedCompetitionIds.includes(competition.id)
                   const atLimit = selectedCompetitionIds.length === 2 && !selected
                   return (
-                    <button key={competition.id} disabled={!compatible || atLimit} onClick={() => toggleCompetition(competition.id)} className={`competition-row${selected ? ' is-selected' : ''}${compatible ? '' : ' is-disabled'}`}>
-                      <span className="competition-logo"><img src={`${import.meta.env.BASE_URL}competition-logos/${competition.logo}`} alt={`${competition.shortName} Logo`} /></span>
-                      <span className="competition-copy"><b>{competition.name}</b><small>{competition.description}</small></span>
-                      <i>{selected ? <Check /> : compatible ? <span /> : <LockKeyhole />}</i>
-                    </button>
+                    <article key={competition.id} className={`competition-row${selected ? ' is-selected' : ''}${compatible ? '' : ' is-disabled'}`}>
+                      <button className="competition-info" onClick={() => setDetailCompetition(competition)} aria-label={`查看${competition.name}介绍与时间线`}>
+                        <span className="competition-logo"><img src={`${import.meta.env.BASE_URL}competition-logos/${competition.logo}`} alt={`${competition.shortName} Logo`} /></span>
+                        <span className="competition-copy"><b>{competition.name}</b><small>{competition.description}</small></span>
+                      </button>
+                      <button className="competition-toggle" disabled={!compatible || atLimit} onClick={() => toggleCompetition(competition.id)} aria-label={!compatible ? `${competition.name}暂不适配` : selected ? `取消选择${competition.name}` : `选择${competition.name}`}>
+                        {selected ? <Check /> : compatible ? <span /> : <LockKeyhole />}
+                      </button>
+                    </article>
                   )
                 })}
               </div>
-              <BottomAction><button className="back-link" onClick={() => setScreen('camp')}><ArrowLeft />上一步</button><button className="primary-button" disabled={selectedCompetitionIds.length !== 2} onClick={() => setScreen('result')}>生成方案<ArrowRight /></button></BottomAction>
+              <BottomAction><button className="back-link" onClick={() => setScreen('camp')}><ArrowLeft />上一步</button><button className="primary-button" onClick={() => setScreen('result')}>{selectedCompetitionIds.length ? '生成方案' : '跳过竞赛'}<ArrowRight /></button></BottomAction>
             </motion.section>
           )}
 
           {screen === 'result' && selectedProject && (
             <motion.section key="result" className="result-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <header className="result-top"><Logo compact /><button className="round-button" onClick={reset} aria-label="重新开始"><RotateCcw /></button></header>
-              <div className="result-heading"><p className="kicker">规划完成</p><h1>你的创新<br />成长方案</h1><p>课题、技能与竞赛已经连接成一条清晰路线。</p></div>
+              <div className="result-heading"><p className="kicker">规划完成</p><h1>你的创新<br />成长方案</h1><p>你的选择已经整理成一条清晰路线，跳过的模块也可以稍后补充。</p></div>
               <div className="route-card">
                 <div><i>01</i><span>研究课题</span><b>{selectedProject.title}</b></div>
                 <div><i>02</i><span>技能营地</span><b>{selectedCamp?.name ?? '已跳过 · 直接推进课题'}</b></div>
-                <div><i>03</i><span>竞赛方向</span><b>{selectedCompetitionIds.map((id) => competitions.find((item) => item.id === id)?.name).join(' ＋ ')}</b></div>
+                <div><i>03</i><span>竞赛方向</span><b>{selectedCompetitionIds.length ? selectedCompetitionIds.map((id) => competitions.find((item) => item.id === id)?.name).join(' ＋ ') : '已跳过 · 稍后再决定'}</b></div>
               </div>
               {assessment ? <div className={`assessment-result ${assessment.tone}`}><Sparkles /><div><span>自我认知</span><b>{assessment.title}</b><small>{assessment.note}</small></div></div> : <button className="assessment-invite result-invite" onClick={() => { setQuizReturn('result'); setQuizIndex(0); setQuizAnswers([]); setScreen('quiz') }}><Sparkles /><div><b>还没做自我认知</b><span>可选 · 用 1 分钟补充起点判断</span></div><ChevronRight /></button>}
               <div className="export-block"><h2>带走你的方案</h2><p>生成手机海报后，可长按保存或调用系统分享。</p><button className="primary-button purple-button" onClick={createPoster} disabled={posterBusy}>{posterBusy ? '正在排版…' : <><Download />生成规划海报</>}</button></div>
@@ -536,6 +544,13 @@ export default function App() {
       <AnimatePresence>
         {detailProject && <DetailSheet label="课题介绍" title={detailProject.title} onClose={() => setDetailProject(null)} action={<button className={`primary-button${selectedProjectId === detailProject.id ? ' is-selected' : ''}`} onClick={() => selectProject(detailProject)}>{selectedProjectId === detailProject.id ? <><Check />已选中这个课题</> : <>选择这个课题<ArrowRight /></>}</button>}><div className="tags">{detailProject.majors.map((item) => <span key={item}>{item}</span>)}</div><p className="sheet-description">{detailProject.description}</p></DetailSheet>}
         {detailCamp && <DetailSheet label="营地介绍" title={detailCamp.name} onClose={() => setDetailCamp(null)} action={selectedProject?.campIds.includes(detailCamp.id) ? <button className={`primary-button${selectedCampId === detailCamp.id ? ' is-selected' : ''}`} onClick={() => { setSelectedCampId(detailCamp.id); setDetailCamp(null) }}>{selectedCampId === detailCamp.id ? <><Check />已选中这个营地</> : <>选择这个营地<ArrowRight /></>}</button> : <div className="disabled-note"><LockKeyhole />这个营地与当前课题暂不适配</div>}><p className="sheet-description">{detailCamp.description}</p><div className="camp-detail"><span>学习重点</span><ul>{detailCamp.focus.map((item) => <li key={item}>{item}</li>)}</ul><span>预期产出</span><b>{detailCamp.output}</b></div></DetailSheet>}
+        {detailCompetition && <DetailSheet label="竞赛介绍与时间线" title={detailCompetition.name} onClose={() => setDetailCompetition(null)} action={selectedProject && compatibleCompetitions.includes(detailCompetition.id) ? <button className={`primary-button${selectedCompetitionIds.includes(detailCompetition.id) ? ' is-selected' : ''}`} disabled={selectedCompetitionIds.length === 2 && !selectedCompetitionIds.includes(detailCompetition.id)} onClick={() => { toggleCompetition(detailCompetition.id); setDetailCompetition(null) }}>{selectedCompetitionIds.includes(detailCompetition.id) ? <><Check />取消选择这项竞赛</> : selectedCompetitionIds.length === 2 ? '已选满 2 项竞赛' : <>选择这项竞赛<ArrowRight /></>}</button> : <div className="disabled-note"><LockKeyhole />这项竞赛与当前课题暂不适配</div>}>
+          <div className="competition-sheet-logo"><img src={`${import.meta.env.BASE_URL}competition-logos/${detailCompetition.logo}`} alt={`${detailCompetition.shortName} Logo`} /></div>
+          <p className="sheet-description competition-description">{detailCompetition.detail}</p>
+          <div className="timeline-heading"><CalendarDays /><div><b>关键时间线</b><span>{detailCompetition.timelineNote}</span></div></div>
+          <ol className="competition-timeline">{detailCompetition.timeline.map((item) => <li key={`${item.date}-${item.label}`}><i /><div><time>{item.date}</time><b>{item.label}</b>{item.note && <span>{item.note}</span>}</div></li>)}</ol>
+          {detailCompetition.sourceUrl && <a className="official-link" href={detailCompetition.sourceUrl} target="_blank" rel="noreferrer">查看赛事官方信息<ExternalLink /></a>}
+        </DetailSheet>}
         {poster && <motion.div className="poster-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><div className="poster-view"><header><div><b>规划海报已生成</b><span>长按图片也可以直接保存</span></div><button className="round-button" onClick={() => setPoster(null)} aria-label="关闭"><X /></button></header><img src={poster.url} alt="PrimeTech X Lab 自主规划路线海报" /><div className="poster-actions"><button onClick={downloadPoster}><Download />保存图片</button><button onClick={sharePoster}><Share2 />系统分享</button></div>{notice && <p className="notice"><Info />{notice}</p>}</div></motion.div>}
       </AnimatePresence>
     </>

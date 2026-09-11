@@ -20,7 +20,11 @@ export type Competition = {
   name: string
   shortName: string
   description: string
+  detail: string
   logo: string
+  timeline: { date: string; label: string; note?: string }[]
+  timelineNote: string
+  sourceUrl?: string
 }
 
 export const projects: Project[] = [
@@ -56,13 +60,117 @@ export const camps: Camp[] = [
 ]
 
 export const competitions: Competition[] = [
-  { id: 'conrad', shortName: 'Conrad', name: 'Conrad Challenge 康莱德创新挑战赛', description: '适合具有明确社会问题、创新技术方案与跨学科验证路径的项目。', logo: 'conrad.svg' },
-  { id: 'icc', shortName: 'ICC', name: 'ICC 全球发明大会（中国）', description: '适合创新产品、工程设计及综合发明成果展示。', logo: 'icc.png' },
-  { id: 'iena', shortName: 'iENA', name: 'iENA 德国纽伦堡国际发明展', description: '适合具有实体原型、工程创新或应用价值的发明项目。', logo: 'iena.png' },
-  { id: 'diamond', shortName: 'Diamond', name: 'Diamond Challenge 钻石挑战赛', description: '适合能够形成用户价值、解决方案与项目表达的创新方向。', logo: 'diamond.png' },
-  { id: 'blueocean', shortName: 'Blue Ocean', name: 'Blue Ocean 蓝海创业大赛', description: '适合具备用户洞察、市场机会与创新模式的项目。', logo: 'blue-ocean.png' },
-  { id: 'bpa', shortName: 'BPA', name: 'BPA 美国商业全能挑战赛', description: '适合能够延展商业计划、运营思路与英文表达的项目。', logo: 'bpa.svg' },
-  { id: 'bpc', shortName: 'HCBC', name: 'Harvard Crimson Business Competition 哈佛深红商业挑战赛', description: '适合把技术成果进一步转化为商业叙事与项目提案的方向。', logo: 'bpc.png' },
+  {
+    id: 'conrad', shortName: 'Conrad', name: 'Conrad Challenge 康莱德创新挑战赛',
+    description: '适合具有明确社会问题、创新技术方案与跨学科验证路径的项目。',
+    detail: '面向青少年的全球创新挑战，强调从真实问题出发，把科学、技术与创业思维连接成可验证的解决方案。适合已有清晰痛点、原型思路和社会价值表达的团队。',
+    logo: 'conrad.svg', sourceUrl: 'https://conrad.spacecenter.org/',
+    timelineNote: '2026–2027 赛程资料；地点与日期请以组委会最终通知为准。',
+    timeline: [
+      { date: '2026.12.15', label: '报名截止' },
+      { date: '2026.12.25', label: '初赛截止' },
+      { date: '2027.02.27', label: '复赛截止' },
+      { date: '2027.03.11–03.14', label: '中国决赛', note: '上海' },
+      { date: '2027.04.21–04.24', label: '全球站', note: '美国·休斯顿' },
+    ],
+  },
+  {
+    id: 'icc', shortName: 'ICC', name: 'ICC 全球发明大会（中国）',
+    description: '适合创新产品、工程设计及综合发明成果展示。',
+    detail: '围绕发明过程、原创性、社会价值与现场表达进行综合评审。参赛者通常需要准备发明原型或模型、发明日志、查新材料、展板与路演内容。',
+    logo: 'icc.png', sourceUrl: 'https://icc.cffpd.org.cn/',
+    timelineNote: '2026–2027 学年具体日程尚未公布；下列已结束节点用于了解往届节奏。',
+    timeline: [
+      { date: '待官方公布', label: '2026–2027 学年新赛季' },
+      { date: '2026.04.04–06.15', label: '上一届报名', note: '已结束' },
+      { date: '2026.06–07', label: '上一届省赛／主题赛', note: '已结束' },
+      { date: '2026.08.15–08.16', label: '上一届全国总决赛暨国际赛', note: '郑州·已结束' },
+    ],
+  },
+  {
+    id: 'iena', shortName: 'iENA', name: 'iENA 德国纽伦堡国际发明展',
+    description: '适合具有实体原型、工程创新或应用价值的发明项目。',
+    detail: '德国纽伦堡国际发明展面向发明人、研究机构与创新团队，重点展示具有新颖性、可应用性和转化潜力的实体发明，是连接评审、行业交流与成果展示的平台。',
+    logo: 'iena.png', sourceUrl: 'https://www.iena.de/en/',
+    timelineNote: 'iENA 官网公布的 2026 年展会与参展节点。',
+    timeline: [
+      { date: '2026.08.28', label: '早鸟价格截止', note: '已结束' },
+      { date: '2026.10.02', label: '报名截止' },
+      { date: '2026.10.31–11.02', label: 'iENA 2026', note: '德国·纽伦堡会展中心' },
+    ],
+  },
+  {
+    id: 'diamond', shortName: 'Diamond', name: 'Diamond Challenge 钻石挑战赛',
+    description: '适合能够形成用户价值、解决方案与项目表达的创新方向。',
+    detail: '面向全球中学生的创业挑战，鼓励团队围绕商业创新或社会创新形成问题洞察、价值主张、可行方案与完整路演。',
+    logo: 'diamond.png', sourceUrl: 'https://diamondchallenge.org/',
+    timelineNote: '2026–2027 赛程资料；中国半决赛日期仍待公布。',
+    timeline: [
+      { date: '2026.09.16', label: '参赛窗口开放' },
+      { date: '2027.01.14 · 17:00 EST', label: '材料提交截止' },
+      { date: '2027.02.10 · 23:59 EST', label: '晋级通知' },
+      { date: '2027.03', label: '中国半决赛', note: '具体日期待公布' },
+      { date: '2027.03.09', label: '全球入围者公布' },
+      { date: '2027.04.29–04.30', label: '世界峰会' },
+    ],
+  },
+  {
+    id: 'blueocean', shortName: 'Blue Ocean', name: 'Blue Ocean 蓝海创业大赛',
+    description: '适合具备用户洞察、市场机会与创新模式的项目。',
+    detail: '面向 14–18 岁学生的全球线上创业竞赛。参赛者需运用蓝海战略工具，把创新商业想法制作成五分钟英文视频路演。',
+    logo: 'blue-ocean.png', sourceUrl: 'https://blueoceancompetition.org/compete/',
+    timelineNote: 'Blue Ocean 官网公布的 2027 赛程。',
+    timeline: [
+      { date: '随时', label: '在线注册开放' },
+      { date: '2027.02.21', label: '视频路演提交截止' },
+      { date: '2027.04.05', label: 'Top 100 公布' },
+      { date: '2027.04.22', label: 'Top 30 公布' },
+      { date: '2027.05.04', label: 'Top 10 公布' },
+      { date: '2027.05.13', label: '获奖结果公布' },
+    ],
+  },
+  {
+    id: 'bpa', shortName: 'BPA', name: 'BPA 美国商业全能挑战赛',
+    description: '适合能够延展商业计划、运营思路与英文表达的项目。',
+    detail: '以商业实践、创新创业和综合职业能力为核心的学生挑战。技术项目可进一步转化为商业计划、市场分析、运营方案与英文展示。',
+    logo: 'bpa.svg', sourceUrl: 'https://bpa.org/',
+    timelineNote: '2026–2027 赛程资料；区域站月份以最终通知为准。',
+    timeline: [
+      { date: '2026.06.12–12.06', label: '报名时间' },
+      { date: '2026.12.20', label: '初选站', note: '实战组作品提交' },
+      { date: '2027.02–03', label: '区域站', note: '中国站' },
+      { date: '2027.05', label: '全球站', note: '美国·丹佛' },
+      { date: '2027.08', label: '亚洲全球站', note: '中国香港' },
+    ],
+  },
+  {
+    id: 'ctb', shortName: 'CTB', name: 'CTB 全球青年研究创新论坛',
+    description: '适合跨学科研究、社会实践、论文写作与项目成果展示。',
+    detail: '以项目制学习为基础的青年研究创新论坛。团队可以通过研究、发明、编程、商业创新、艺术或公益实践提出原创解决方案，并形成论文与现场展示。',
+    logo: 'ctb.png', sourceUrl: 'https://www.chinathinksbig.com/',
+    timelineNote: 'CTB 官网公布的 2026–2027 赛程；带 * 的现场日期为暂定。',
+    timeline: [
+      { date: '2026.11.30', label: '报名截止' },
+      { date: '2026.12.07', label: '组队启动' },
+      { date: '2027.01.20', label: '论文／项目提交' },
+      { date: '2027.02.26–02.28', label: '全国站 *', note: '北京／上海' },
+      { date: '2027.04.03–04.08', label: '全球站 *', note: '哈佛大学' },
+    ],
+  },
+  {
+    id: 'bpc', shortName: 'HCBC', name: 'Harvard Crimson Business Competition 哈佛深红商业挑战赛',
+    description: '适合把技术成果进一步转化为商业叙事与项目提案的方向。',
+    detail: '面向中学生的全球商业创新竞赛，强调研究支撑、方案可行性、现实商业路径与清晰表达，适合将技术原型发展为完整商业计划。',
+    logo: 'bpc.png', sourceUrl: 'https://www.hcbizcomp.org/en/',
+    timelineNote: '2026–2027 新赛季尚未公布；下列为官网最近一届节奏参考。',
+    timeline: [
+      { date: '待官方公布', label: '2026–2027 新赛季' },
+      { date: '2025.04–2026.03', label: '上一届初赛报名', note: '已结束' },
+      { date: '2026.03–04', label: '上一届初赛阶段', note: '已结束' },
+      { date: '2026.04–05', label: '上一届冠军轮报名', note: '已结束' },
+      { date: '2026.06末–07初', label: '上一届全球冠军轮', note: '哈佛大学·已结束' },
+    ],
+  },
 ]
 
 export const conradProjectIds = new Set(['p01', 'p03', 'p05', 'p08', 'p11', 'p13', 'p17', 'p20'])
@@ -71,7 +179,7 @@ export const softwareOnlyProjectIds = new Set(['p02', 'p07'])
 export const majors = Array.from(new Set(projects.flatMap((project) => project.majors))).sort((a, b) => a.localeCompare(b, 'zh-CN'))
 
 export function compatibleCompetitionIds(project: Project) {
-  const ids = ['icc', 'diamond', 'blueocean', 'bpa', 'bpc']
+  const ids = ['icc', 'diamond', 'blueocean', 'bpa', 'ctb', 'bpc']
   if (!softwareOnlyProjectIds.has(project.id)) ids.splice(1, 0, 'iena')
   if (conradProjectIds.has(project.id)) ids.unshift('conrad')
   return ids

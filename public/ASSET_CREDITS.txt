@@ -1,0 +1,6 @@
+Project preview placeholder photo
+"A Boy fixing his Robotic Project" by Vanessa Loring, Pexels.
+https://www.pexels.com/photo/a-boy-fixing-his-robotic-project-7869036/
+
+Camp QR placeholder generated with QR Server and currently links to the PrimeTech X Lab site root.
+https://goqr.me/api/

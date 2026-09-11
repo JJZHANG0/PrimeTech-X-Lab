@@ -11,8 +11,11 @@ export type Camp = {
   name: string
   subtitle: string
   description: string
+  theme: string
   focus: string[]
   output: string
+  outputs: string[]
+  majorShare: { name: string; value: number }[]
 }
 
 export type Competition = {
@@ -25,6 +28,7 @@ export type Competition = {
   timeline: { date: string; label: string; note?: string }[]
   timelineNote: string
   sourceUrl?: string
+  tags: string[]
 }
 
 export const projects: Project[] = [
@@ -51,12 +55,12 @@ export const projects: Project[] = [
 ]
 
 export const camps: Camp[] = [
-  { id: 'agent', name: '大模型AI智能体开发营', subtitle: 'Agent Systems', description: '围绕智能体规划、工具调用、知识库与多智能体协作，完成一个能够持续执行任务的AI应用。', focus: ['提示与任务规划', 'RAG知识库', '智能体工具调用'], output: '可运行的智能体应用原型' },
-  { id: 'fullstack', name: 'AI原生全栈系统开发营', subtitle: 'AI Native Full-stack', description: '从数据、模型能力到交互界面，学习把AI能力装进一个完整、可演示的软件系统。', focus: ['前端交互', '服务与数据', 'AI能力集成'], output: '完整AI产品Demo' },
-  { id: 'perception', name: '无人驾驶多源融合感知营', subtitle: 'Multi-sensor Perception', description: '学习融合视觉、雷达、惯性测量与距离传感器，让系统能够理解环境并形成可靠判断。', focus: ['传感器接入', '多源数据融合', '边缘识别'], output: '多传感感知与决策原型' },
-  { id: 'wearable', name: '集成电路与智能穿戴装置营', subtitle: 'Wearable Electronics', description: '围绕微控制器、电路、传感与低功耗设计，完成可穿戴或便携式智能硬件。', focus: ['ESP32与电路', '传感数据采集', '可穿戴原型'], output: '可运行智能穿戴装置' },
-  { id: 'robot', name: '具身智能机器人创新营', subtitle: 'Embodied Robotics', description: '把机械结构、执行机构、感知与控制连接起来，完成能够在真实环境中行动的机器人原型。', focus: ['机械结构', '运动与控制', '机器人系统集成'], output: '具身机器人功能原型' },
-  { id: 'drone', name: '多模态无人机创新设计营', subtitle: 'Multimodal Drone Design', description: '从飞行平台、任务载荷到感知与路径规划，完成面向具体场景的无人机系统设计。', focus: ['飞行器结构', '任务载荷', '路径与场景验证'], output: '无人机任务系统方案或缩比原型' },
+  { id: 'agent', name: '大模型AI智能体开发营', subtitle: 'Agent Systems', description: '围绕智能体规划、工具调用、知识库与多智能体协作，完成一个能够持续执行任务的AI应用。', theme: '这不是一次简单的聊天机器人练习，而是把大模型变成能够理解目标、拆解任务并调用真实工具的数字协作者。你将从提示工程出发，搭建RAG知识库、长期记忆与工作流编排，让智能体可以搜索资料、处理数据、生成内容并自我检查；再通过评测集观察幻觉、稳定性和成本之间的取舍。最终，你会亲手构建一个有明确用户、有任务闭环、可以持续迭代的AI原生产品。', focus: ['提示与任务规划', 'RAG知识库', '智能体工具调用'], output: '可运行的智能体应用原型', outputs: ['智能体产品原型与演示界面', '知识库及工具调用工作流', '测试记录与项目路演材料'], majorShare: [{ name: '人工智能', value: 40 }, { name: '计算机科学', value: 35 }, { name: '数据科学', value: 25 }] },
+  { id: 'fullstack', name: 'AI原生全栈系统开发营', subtitle: 'AI Native Full-stack', description: '从数据、模型能力到交互界面，学习把AI能力装进一个完整、可演示的软件系统。', theme: '一个真正能被使用的AI项目，需要的不只是模型调用，还要有流畅界面、可靠数据和完整服务链路。本营地会带你从用户任务与信息架构开始，连接前端交互、后端接口、数据库和模型能力，处理登录、状态、错误恢复与部署等真实产品问题。你会学习如何把模糊想法拆成可验证功能，用快速原型收集反馈，再把代码打磨成可以公开访问和现场演示的完整系统。', focus: ['前端交互', '服务与数据', 'AI能力集成'], output: '完整AI产品Demo', outputs: ['可公开访问的全栈产品', '数据库与AI服务接口', '产品说明及演示视频'], majorShare: [{ name: '计算机科学', value: 35 }, { name: '人工智能', value: 35 }, { name: '人机交互', value: 30 }] },
+  { id: 'perception', name: '无人驾驶多源融合感知营', subtitle: 'Multi-sensor Perception', description: '学习融合视觉、雷达、惯性测量与距离传感器，让系统能够理解环境并形成可靠判断。', theme: '让机器在复杂环境中“看见”并作出可信判断，是无人系统最关键的能力之一。你将接触摄像头、毫米波雷达、超声波与IMU等真实传感器，理解标定、时间同步、坐标变换和噪声过滤，并把不同来源的数据融合成稳定的目标、距离与运动状态。课程还会引入边缘端模型部署和风险决策，让系统不只识别物体，更能在延迟、遮挡和误检中给出安全反应，形成可量化测试的感知闭环。', focus: ['传感器接入', '多源数据融合', '边缘识别'], output: '多传感感知与决策原型', outputs: ['多源传感采集平台', '融合识别与风险决策程序', '场景测试数据及分析报告'], majorShare: [{ name: '人工智能', value: 35 }, { name: '电子工程', value: 35 }, { name: '自动化', value: 30 }] },
+  { id: 'wearable', name: '集成电路与智能穿戴装置营', subtitle: 'Wearable Electronics', description: '围绕微控制器、电路、传感与低功耗设计，完成可穿戴或便携式智能硬件。', theme: '把电路真正穿在身上，意味着每一克重量、每一毫安功耗和每一次误触都需要被认真设计。你将从ESP32等微控制器出发，完成传感器选型、电路连接、信号采集、无线通信与低功耗策略，再结合人体工学和结构设计解决佩戴舒适度、可靠性与安全性。通过连续采样和真实用户测试，你会让一块原始开发板逐步成长为能够记录行为、识别状态并提供反馈的完整智能装置。', focus: ['ESP32与电路', '传感数据采集', '可穿戴原型'], output: '可运行智能穿戴装置', outputs: ['可佩戴硬件功能原型', '嵌入式采集与反馈程序', '结构模型和用户测试记录'], majorShare: [{ name: '生物医学工程', value: 35 }, { name: '电子工程', value: 35 }, { name: '工业设计', value: 30 }] },
+  { id: 'robot', name: '具身智能机器人创新营', subtitle: 'Embodied Robotics', description: '把机械结构、执行机构、感知与控制连接起来，完成能够在真实环境中行动的机器人原型。', theme: '具身智能的魅力，在于算法必须穿过电机、齿轮和传感器，最终在真实世界中完成动作。你将围绕一个具体任务设计机械结构和执行机构，建立运动学模型，接入视觉或姿态感知，并通过控制算法让机器人稳定地抓取、移动或与人互动。课程会持续面对摩擦、负载、延迟和安全限位等真实工程问题，在仿真与实机测试之间循环验证，最终做出一个动作可重复、性能可测量的机器人系统。', focus: ['机械结构', '运动与控制', '机器人系统集成'], output: '具身机器人功能原型', outputs: ['机器人机械与执行系统', '感知控制程序及调试记录', '功能演示与工程测试报告'], majorShare: [{ name: '机器人工程', value: 40 }, { name: '机械工程', value: 35 }, { name: '人工智能', value: 25 }] },
+  { id: 'drone', name: '多模态无人机创新设计营', subtitle: 'Multimodal Drone Design', description: '从飞行平台、任务载荷到感知与路径规划，完成面向具体场景的无人机系统设计。', theme: '无人机不是一台会飞的相机，而是一套同时受空气动力、能源、载荷、感知和任务约束的复杂系统。你将从真实场景反推航程与载重，设计机体和任务载荷，理解飞控、姿态估计、定位与路径规划，并融合视觉或其他传感信息完成自主判断。课程通过仿真、缩比实验和安全测试不断校准方案，让每一次起飞都有任务逻辑，每一组数据都能支撑设计决策，最终形成完整的低空系统提案。', focus: ['飞行器结构', '任务载荷', '路径与场景验证'], output: '无人机任务系统方案或缩比原型', outputs: ['无人机任务系统或缩比原型', '航线规划与多模态感知方案', '仿真数据及安全验证报告'], majorShare: [{ name: '航空航天工程', value: 40 }, { name: '自动化', value: 35 }, { name: '交通运输工程', value: 25 }] },
 ]
 
 export const competitions: Competition[] = [
@@ -64,7 +68,7 @@ export const competitions: Competition[] = [
     id: 'conrad', shortName: 'Conrad', name: 'Conrad Challenge 康莱德创新挑战赛',
     description: '适合具有明确社会问题、创新技术方案与跨学科验证路径的项目。',
     detail: '面向青少年的全球创新挑战，强调从真实问题出发，把科学、技术与创业思维连接成可验证的解决方案。适合已有清晰痛点、原型思路和社会价值表达的团队。',
-    logo: 'conrad.svg', sourceUrl: 'https://conrad.spacecenter.org/',
+    logo: 'conrad.svg', tags: ['全球科创', '原型验证', '英文路演'], sourceUrl: 'https://conrad.spacecenter.org/',
     timelineNote: '2026–2027 赛程资料；地点与日期请以组委会最终通知为准。',
     timeline: [
       { date: '2026.12.15', label: '报名截止' },
@@ -78,7 +82,7 @@ export const competitions: Competition[] = [
     id: 'icc', shortName: 'ICC', name: 'ICC 全球发明大会（中国）',
     description: '适合创新产品、工程设计及综合发明成果展示。',
     detail: '围绕发明过程、原创性、社会价值与现场表达进行综合评审。参赛者通常需要准备发明原型或模型、发明日志、查新材料、展板与路演内容。',
-    logo: 'icc.png', sourceUrl: 'https://icc.cffpd.org.cn/',
+    logo: 'icc.png', tags: ['白名单赛事', '发明创造', '作品展示'], sourceUrl: 'https://icc.cffpd.org.cn/',
     timelineNote: '2026–2027 学年具体日程尚未公布；下列已结束节点用于了解往届节奏。',
     timeline: [
       { date: '待官方公布', label: '2026–2027 学年新赛季' },
@@ -91,7 +95,7 @@ export const competitions: Competition[] = [
     id: 'iena', shortName: 'iENA', name: 'iENA 德国纽伦堡国际发明展',
     description: '适合具有实体原型、工程创新或应用价值的发明项目。',
     detail: '德国纽伦堡国际发明展面向发明人、研究机构与创新团队，重点展示具有新颖性、可应用性和转化潜力的实体发明，是连接评审、行业交流与成果展示的平台。',
-    logo: 'iena.png', sourceUrl: 'https://www.iena.de/en/',
+    logo: 'iena.png', tags: ['国际发明展', '实体原型', '成果转化'], sourceUrl: 'https://www.iena.de/en/',
     timelineNote: 'iENA 官网公布的 2026 年展会与参展节点。',
     timeline: [
       { date: '2026.08.28', label: '早鸟价格截止', note: '已结束' },
@@ -103,7 +107,7 @@ export const competitions: Competition[] = [
     id: 'diamond', shortName: 'Diamond', name: 'Diamond Challenge 钻石挑战赛',
     description: '适合能够形成用户价值、解决方案与项目表达的创新方向。',
     detail: '面向全球中学生的创业挑战，鼓励团队围绕商业创新或社会创新形成问题洞察、价值主张、可行方案与完整路演。',
-    logo: 'diamond.png', sourceUrl: 'https://diamondchallenge.org/',
+    logo: 'diamond.png', tags: ['商业创新', '社会创新', '英文路演'], sourceUrl: 'https://diamondchallenge.org/',
     timelineNote: '2026–2027 赛程资料；中国半决赛日期仍待公布。',
     timeline: [
       { date: '2026.09.16', label: '参赛窗口开放' },
@@ -118,7 +122,7 @@ export const competitions: Competition[] = [
     id: 'blueocean', shortName: 'Blue Ocean', name: 'Blue Ocean 蓝海创业大赛',
     description: '适合具备用户洞察、市场机会与创新模式的项目。',
     detail: '面向 14–18 岁学生的全球线上创业竞赛。参赛者需运用蓝海战略工具，把创新商业想法制作成五分钟英文视频路演。',
-    logo: 'blue-ocean.png', sourceUrl: 'https://blueoceancompetition.org/compete/',
+    logo: 'blue-ocean.png', tags: ['创业赛', '视频路演', '线上参与'], sourceUrl: 'https://blueoceancompetition.org/compete/',
     timelineNote: 'Blue Ocean 官网公布的 2027 赛程。',
     timeline: [
       { date: '随时', label: '在线注册开放' },
@@ -133,7 +137,7 @@ export const competitions: Competition[] = [
     id: 'bpa', shortName: 'BPA', name: 'BPA 美国商业全能挑战赛',
     description: '适合能够延展商业计划、运营思路与英文表达的项目。',
     detail: '以商业实践、创新创业和综合职业能力为核心的学生挑战。技术项目可进一步转化为商业计划、市场分析、运营方案与英文展示。',
-    logo: 'bpa.svg', sourceUrl: 'https://bpa.org/',
+    logo: 'bpa.svg', tags: ['商业实践', '团队协作', '国际舞台'], sourceUrl: 'https://bpa.org/',
     timelineNote: '2026–2027 赛程资料；区域站月份以最终通知为准。',
     timeline: [
       { date: '2026.06.12–12.06', label: '报名时间' },
@@ -147,7 +151,7 @@ export const competitions: Competition[] = [
     id: 'ctb', shortName: 'CTB', name: 'CTB 全球青年研究创新论坛',
     description: '适合跨学科研究、社会实践、论文写作与项目成果展示。',
     detail: '以项目制学习为基础的青年研究创新论坛。团队可以通过研究、发明、编程、商业创新、艺术或公益实践提出原创解决方案，并形成论文与现场展示。',
-    logo: 'ctb.png', sourceUrl: 'https://www.chinathinksbig.com/',
+    logo: 'ctb.png', tags: ['跨学科研究', '论文写作', '项目实践'], sourceUrl: 'https://www.chinathinksbig.com/',
     timelineNote: 'CTB 官网公布的 2026–2027 赛程；带 * 的现场日期为暂定。',
     timeline: [
       { date: '2026.11.30', label: '报名截止' },
@@ -161,7 +165,7 @@ export const competitions: Competition[] = [
     id: 'bpc', shortName: 'HCBC', name: 'Harvard Crimson Business Competition 哈佛深红商业挑战赛',
     description: '适合把技术成果进一步转化为商业叙事与项目提案的方向。',
     detail: '面向中学生的全球商业创新竞赛，强调研究支撑、方案可行性、现实商业路径与清晰表达，适合将技术原型发展为完整商业计划。',
-    logo: 'bpc.png', sourceUrl: 'https://www.hcbizcomp.org/en/',
+    logo: 'bpc.png', tags: ['商业计划', '创新创业', '英文展示'], sourceUrl: 'https://www.hcbizcomp.org/en/',
     timelineNote: '2026–2027 新赛季尚未公布；下列为官网最近一届节奏参考。',
     timeline: [
       { date: '待官方公布', label: '2026–2027 新赛季' },

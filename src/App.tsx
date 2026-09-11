@@ -75,10 +75,9 @@ function StepHeader({ step, onReset }: { step: number; onReset: () => void }) {
   )
 }
 
-function DetailSheet({ label, title, titleAside, children, action, onClose }: {
+function DetailSheet({ label, title, children, action, onClose }: {
   label: string
   title: string
-  titleAside?: React.ReactNode
   children: React.ReactNode
   action?: React.ReactNode
   onClose: () => void
@@ -99,7 +98,7 @@ function DetailSheet({ label, title, titleAside, children, action, onClose }: {
         <div className="sheet-handle" />
         <button className="round-button sheet-close" onClick={onClose} aria-label="关闭"><X /></button>
         <p className="kicker">{label}</p>
-        <div className="sheet-title-row"><h2 id="detail-title">{title}</h2>{titleAside}</div>
+        <h2 id="detail-title">{title}</h2>
         {children}
         {action}
       </motion.section>
@@ -237,7 +236,7 @@ async function makePoster(project: Project, camp: Camp | null, selectedCompetiti
   }
 
   card(472, '01', '研究课题', project.title, project.description)
-  card(806, '02', '七天项目营地', camp?.name ?? '已跳过营地', camp?.description ?? '保留自主推进节奏；需要集中训练时，仍可回来补选适配营地。')
+  card(806, '02', '六天项目营地', camp?.name ?? '已跳过营地', camp?.description ?? '保留自主推进节奏；需要基础强化时，仍可回来补选适配营地。')
   card(1140, '03', '竞赛方向', selectedCompetitions.length ? selectedCompetitions.map((item) => item.shortName).join('  ×  ') : '已跳过竞赛', selectedCompetitions.length ? selectedCompetitions.map((item) => item.description).join('；') : '先把课题做扎实，未来可根据成果形态补充更合适的展示舞台。')
 
   context.fillStyle = '#fff0d9'
@@ -289,6 +288,7 @@ export default function App() {
   const [quizReturn, setQuizReturn] = useState<'camp' | 'result'>('camp')
   const [poster, setPoster] = useState<Poster | null>(null)
   const [posterBusy, setPosterBusy] = useState(false)
+  const [projectPosterHintVisible, setProjectPosterHintVisible] = useState(false)
 
   useEffect(() => {
     const timer = window.setTimeout(() => setSplash(false), 2800)
@@ -296,6 +296,16 @@ export default function App() {
   }, [])
 
   useEffect(() => () => { if (poster) URL.revokeObjectURL(poster.url) }, [poster])
+
+  useEffect(() => {
+    setProjectPosterHintVisible(false)
+  }, [previewProject?.id])
+
+  useEffect(() => {
+    if (!projectPosterHintVisible) return
+    const timer = window.setTimeout(() => setProjectPosterHintVisible(false), 2600)
+    return () => window.clearTimeout(timer)
+  }, [projectPosterHintVisible])
 
   const customProject: Project | null = customProjectTitle.trim() ? { id: 'custom', title: customProjectTitle.trim(), majors: selectedMajors.length ? selectedMajors : ['自主命题'], description: '这是由学生自主提出的研究方向。后续可以继续补充研究问题、目标用户、技术路径、验证方式与预期成果，逐步把想法发展成可执行的项目方案。', campIds: [], competitionIds: competitions.map((item) => item.id) } : null
   const selectedProject = selectedProjectId === 'custom' ? customProject : projects.find((project) => project.id === selectedProjectId) ?? null
@@ -464,15 +474,15 @@ export default function App() {
             </motion.section>
           )}
 
-          {screen === 'intro-camp' && <StepIntro eyebrow="第二步 · 能力加速" title={<>需要一段集中<br />训练吗？</>} copy="营地是可选项。需要支持时，选择与你课题高度适配的能力加速器；已有经验，也可以直接跳过。" action="查看适配营地" onContinue={() => setScreen('camp')} onBack={() => setScreen('project')} />}
+          {screen === 'intro-camp' && <StepIntro eyebrow="第二步 · 能力加速" title={<>需要一些前置<br />基础技能吗？</>} copy="营地是可选项。需要基础强化时，选择与你课题高度适配的营地；已有经验，也可以直接跳过。" action="查看适配营地" onContinue={() => setScreen('camp')} onBack={() => setScreen('project')} />}
 
           {screen === 'camp' && selectedProject && (
             <motion.section key="camp" className="planner" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }}>
               <StepHeader step={2} onReset={reset} />
               <PageHeading eyebrow="第二步 · 选择营地" title="选择适配营地" copy="高度适配的方向优先展示，其他营地也可自由选择。点名称查看完整介绍。" />
               <div className="camp-value-card">
-                <span>{assessment?.title ?? '七天项目制营地'}</span>
-                <h2>七天，把想法推进成一件经得起追问的作品</h2>
+                <span>{assessment?.title ?? '六天项目制营地'}</span>
+                <h2>六天，把想法推进成一件经得起追问的作品</h2>
                 <p>你得到的不只是一次技术体验：导师会陪你把问题拆成工程任务，在真实设备、数据和失败中完成验证；最终留下可演示的原型、可复现的证据链，也留下能够讲清“我为什么做、怎样做、学到了什么”的个人故事。</p>
                 <div><i>真实原型</i><i>完整证据链</i><i>个人成长叙事</i></div>
               </div>
@@ -539,7 +549,7 @@ export default function App() {
               <div className="student-summary"><div><span>PRIMETECH X LAB PATHWAY</span><b>{nickname}</b></div><strong>{grade}</strong></div>
               <div className="route-card">
                 <div><i>01</i><span>研究课题</span><b>{selectedProject.title}</b><p>{selectedProject.description}</p></div>
-                <div><i>02</i><span>七天项目营地</span><b>{selectedCamp?.name ?? '已跳过 · 直接推进课题'}</b><p>{selectedCamp?.description ?? '保留自主推进节奏；需要集中训练时，仍可回来补选适配营地。'}</p></div>
+                <div><i>02</i><span>六天项目营地</span><b>{selectedCamp?.name ?? '已跳过 · 直接推进课题'}</b><p>{selectedCamp?.description ?? '保留自主推进节奏；需要基础强化时，仍可回来补选适配营地。'}</p></div>
                 <div><i>03</i><span>竞赛方向</span><b>{selectedCompetitions.length ? selectedCompetitions.map((item) => item.name).join(' ＋ ') : '已跳过 · 稍后再决定'}</b><p>{selectedCompetitions.length ? selectedCompetitions.map((item) => item.description).join('；') : '先把课题做扎实，未来可根据成果形态补充更合适的展示舞台。'}</p></div>
               </div>
               {assessment ? <div className={`assessment-result ${assessment.tone}`}><Sparkles /><div><span>自我认知</span><b>{assessment.title}</b><small>{assessment.note}</small></div></div> : <button className="assessment-invite result-invite" onClick={() => { setQuizReturn('result'); setQuizIndex(0); setQuizAnswers([]); setScreen('quiz') }}><Sparkles /><div><b>还没做自我认知</b><span>可选 · 用 1 分钟补充起点判断</span></div><ChevronRight /></button>}
@@ -553,7 +563,7 @@ export default function App() {
       <AnimatePresence>
         {majorFilterOpen && <DetailSheet label="多选筛选" title="选择适配专业" onClose={() => setMajorFilterOpen(false)} action={<div className="filter-sheet-actions"><button onClick={() => setSelectedMajors([])}>清空选择</button><button className="primary-button" onClick={() => setMajorFilterOpen(false)}>完成 · {selectedMajors.length || '全部'}</button></div>}><p className="sheet-description filter-sheet-copy">可同时选择多个专业，课题匹配其中任意一个专业就会显示。</p><div className="major-options">{majors.map((item) => { const selected = selectedMajors.includes(item); return <button key={item} className={selected ? 'is-selected' : ''} onClick={() => setSelectedMajors((current) => selected ? current.filter((majorItem) => majorItem !== item) : [...current, item])}>{selected && <Check />}{item}</button> })}</div></DetailSheet>}
         {detailProject && <DetailSheet label="课题介绍" title={detailProject.title} onClose={() => setDetailProject(null)} action={<div className="sheet-actions"><button className="preview-button" onClick={() => { setPreviewProject(detailProject); setDetailProject(null) }}><ImageIcon />预览课题海报</button><button className={`primary-button${selectedProjectId === detailProject.id ? ' is-selected' : ''}`} onClick={() => selectProject(detailProject)}>{selectedProjectId === detailProject.id ? <><Check />已选中这个课题</> : <>选择这个课题<ArrowRight /></>}</button></div>}><div className="tags">{detailProject.majors.map((item) => <span key={item}>{item}</span>)}</div><p className="sheet-description">{detailProject.description}</p></DetailSheet>}
-        {detailCamp && <DetailSheet label="营地完整介绍 · 7 DAYS" title={detailCamp.name} titleAside={<div className="camp-title-qr"><img src={`${import.meta.env.BASE_URL}camp-qr-placeholder.png`} alt="营地详情二维码占位图" /><span>扫码详情</span></div>} onClose={() => setDetailCamp(null)} action={<button className={`primary-button${selectedCampId === detailCamp.id ? ' is-selected' : ''}`} onClick={() => { setSelectedCampId(selectedCampId === detailCamp.id ? null : detailCamp.id); setDetailCamp(null) }}>{selectedCampId === detailCamp.id ? <><Check />取消选择这个营地</> : <>选择这个营地<ArrowRight /></>}</button>}>
+        {detailCamp && <DetailSheet label="营地完整介绍 · 6 DAYS" title={detailCamp.name} onClose={() => setDetailCamp(null)} action={<button className={`primary-button${selectedCampId === detailCamp.id ? ' is-selected' : ''}`} onClick={() => { setSelectedCampId(selectedCampId === detailCamp.id ? null : detailCamp.id); setDetailCamp(null) }}>{selectedCampId === detailCamp.id ? <><Check />取消选择这个营地</> : <>选择这个营地<ArrowRight /></>}</button>}>
           {selectedProject?.campIds.includes(detailCamp.id) && <div className="detail-fit-badge"><Sparkles />与你的课题高度适配</div>}
           <div className="camp-theme"><span>主题诠释</span><p>{detailCamp.theme}</p></div>
           <div className="major-share"><div className="section-label"><span>申请专业占比</span><small>规划参考</small></div>{detailCamp.majorShare.map((item) => <div key={item.name} className="share-row"><div><b>{item.name}</b><span>{item.value}%</span></div><i><span style={{ width: `${item.value}%` }} /></i></div>)}</div>
@@ -566,12 +576,12 @@ export default function App() {
           <ol className="competition-timeline">{detailCompetition.timeline.map((item) => <li key={`${item.date}-${item.label}`}><i /><div><time>{item.date}</time><b>{item.label}</b>{item.note && <span>{item.note}</span>}</div></li>)}</ol>
           {detailCompetition.sourceUrl && <a className="official-link" href={detailCompetition.sourceUrl} target="_blank" rel="noreferrer">查看赛事官方信息<ExternalLink /></a>}
         </DetailSheet>}
-        {previewProject && <motion.div className="project-preview-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><section className="project-preview-page"><header><Logo compact /><button className="round-button" onClick={() => setPreviewProject(null)} aria-label="关闭课题海报"><X /></button></header><div className={`project-poster-card${previewProject.poster ? ' has-official-poster' : ''}`}><img src={`${import.meta.env.BASE_URL}${previewProject.poster ?? 'project-preview-placeholder.jpg'}`} alt={previewProject.poster ? `${previewProject.title}课题海报` : '课题海报待补充占位图片'} />{!previewProject.poster && <><div className="project-poster-shade" /><div className="project-poster-content"><p>PRIMETECH X LAB · PROJECT</p><h2>{previewProject.title}</h2><div>{previewProject.majors.slice(0, 3).map((item) => <span key={item}>{item}</span>)}</div><small>这项课题的正式海报尚未包含在本次表格中</small></div></>}</div><button className="preview-back" onClick={() => { setDetailProject(previewProject); setPreviewProject(null) }}><ArrowLeft />返回课题介绍</button></section></motion.div>}
+        {previewProject && <motion.div className="project-preview-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><section className="project-preview-page"><header><Logo compact /><button className="round-button" onClick={() => setPreviewProject(null)} aria-label="关闭课题海报"><X /></button></header><div className={`project-poster-card${previewProject.poster ? ' has-official-poster' : ''}`}><img onLoad={() => setProjectPosterHintVisible(true)} src={`${import.meta.env.BASE_URL}${previewProject.poster ?? 'project-preview-placeholder.jpg'}`} alt={previewProject.poster ? `${previewProject.title}课题海报` : '课题海报待补充占位图片'} />{!previewProject.poster && <><div className="project-poster-shade" /><div className="project-poster-content"><p>PRIMETECH X LAB · PROJECT</p><h2>{previewProject.title}</h2><div>{previewProject.majors.slice(0, 3).map((item) => <span key={item}>{item}</span>)}</div><small>这项课题的正式海报尚未包含在本次表格中</small></div></>}</div>{projectPosterHintVisible && <motion.div className="project-save-hint" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}><span /><b>长按图片可直接保存</b></motion.div>}<button className="preview-back" onClick={() => { setDetailProject(previewProject); setPreviewProject(null) }}><ArrowLeft />返回课题介绍</button></section></motion.div>}
         {poster && <motion.div className="poster-backdrop poster-guide" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
           <button className="poster-close" onClick={() => setPoster(null)} aria-label="关闭海报"><X /></button>
           <div className="poster-guide-stage">
             <img src={poster.url} alt="PrimeTech X Lab 自主规划路线海报" />
-            <div className="share-coach" aria-hidden="true"><span className="ripple-target"><i /><i /><b /></span><div className="share-bubble"><b>长按可直接分享</b><span>按住海报图片，选择分享或保存</span></div></div>
+            <div className="share-coach" aria-hidden="true"><span className="ripple-target"><i /><i /><b /></span><div className="share-bubble"><b>长按图片可直接分享</b><span>按住上方海报，选择分享或保存</span></div></div>
           </div>
         </motion.div>}
       </AnimatePresence>

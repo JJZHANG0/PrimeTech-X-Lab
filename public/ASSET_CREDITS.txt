@@ -4,6 +4,3 @@ https://www.pexels.com/photo/a-boy-fixing-his-robotic-project-7869036/
 
 Project posters p01–p18
 Provided by the user in the workbook “副本课题列表_完善版(1)(2).xlsx”.
-
-Camp QR placeholder generated with QR Server and currently links to the PrimeTech X Lab site root.
-https://goqr.me/api/

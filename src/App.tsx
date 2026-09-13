@@ -216,42 +216,81 @@ async function makePoster(project: Project, camp: Camp | null, selectedCompetiti
   context.fillStyle = '#aaa3b4'
   context.fillText('MY INNOVATION PATHWAY', margin, 370)
 
-  const card = (top: number, index: string, label: string, title: string, summary: string) => {
+  const tagPalette = [
+    { background: '#eee7ff', foreground: '#5d35c7' },
+    { background: '#e5f2ff', foreground: '#246aa3' },
+    { background: '#e5f6ec', foreground: '#26764a' },
+  ]
+
+  const drawTags = (tags: string[], x: number, y: number, maxWidth: number) => {
+    context.font = '600 18px Noto Sans SC, sans-serif'
+    let currentX = x
+    let currentY = y
+    tags.slice(0, 3).forEach((tag, index) => {
+      const width = Math.ceil(context.measureText(tag).width) + 34
+      if (currentX + width > x + maxWidth && currentX > x) {
+        currentX = x
+        currentY += 42
+      }
+      const colors = tagPalette[index % tagPalette.length]
+      context.fillStyle = colors.background
+      context.beginPath()
+      context.roundRect(currentX, currentY, width, 34, 17)
+      context.fill()
+      context.fillStyle = colors.foreground
+      context.fillText(tag, currentX + 17, currentY + 24)
+      currentX += width + 12
+    })
+    return currentY + 34
+  }
+
+  const card = (top: number, index: string, label: string, title: string, summary: string, tags: string[] = []) => {
     context.fillStyle = '#fff'
     context.beginPath()
-    context.roundRect(margin, top, canvas.width - margin * 2, 304, 34)
+    context.roundRect(margin, top, canvas.width - margin * 2, 330, 34)
     context.fill()
     context.fillStyle = '#6c3be7'
     context.font = '700 25px Manrope, sans-serif'
-    context.fillText(index, margin + 40, top + 54)
+    context.fillText(index, margin + 40, top + 50)
     context.fillStyle = '#817b87'
     context.font = '600 23px Noto Sans SC, sans-serif'
-    context.fillText(label, margin + 92, top + 54)
+    context.fillText(label, margin + 92, top + 50)
     context.fillStyle = '#17151b'
-    context.font = '700 34px Noto Sans SC, sans-serif'
-    const afterTitle = wrapText(context, title, margin + 40, top + 118, canvas.width - margin * 2 - 80, 46, 2)
-    context.font = '500 20px Noto Sans SC, sans-serif'
+    context.font = '700 32px Noto Sans SC, sans-serif'
+    const afterTitle = wrapText(context, title, margin + 40, top + 96, canvas.width - margin * 2 - 80, 40, 2)
+    const tagBottom = tags.length ? drawTags(tags, margin + 40, afterTitle + 10, canvas.width - margin * 2 - 80) : afterTitle
+    const summaryTop = tags.length ? tagBottom + 20 : afterTitle + 18
+    const summaryLines = tags.length && afterTitle > top + 145 ? 3 : 4
+    context.font = '500 19px Noto Sans SC, sans-serif'
     context.fillStyle = '#706a76'
-    wrapText(context, summary, margin + 40, Math.max(top + 210, afterTitle + 24), canvas.width - margin * 2 - 80, 30, 2)
+    wrapText(context, summary, margin + 40, summaryTop, canvas.width - margin * 2 - 80, 25, summaryLines)
   }
 
-  card(472, '01', '研究课题', project.title, project.description)
-  card(806, '02', '六天项目营地', camp?.name ?? '已跳过营地', camp?.description ?? '保留自主推进节奏；需要基础强化时，仍可回来补选适配营地。')
-  card(1140, '03', '竞赛方向', selectedCompetitions.length ? selectedCompetitions.map((item) => item.shortName).join('  ×  ') : '已跳过竞赛', selectedCompetitions.length ? selectedCompetitions.map((item) => item.description).join('；') : '先把课题做扎实，未来可根据成果形态补充更合适的展示舞台。')
+  const projectTags = project.majors.length >= 3 ? project.majors.slice(0, 3) : Array.from(new Set([...project.majors, '跨学科研究', '项目制学习'])).slice(0, 3)
+  const campSummary = camp
+    ? `${camp.description} 六天内将围绕核心技术完成需求拆解、系统实现、原型测试与成果表达，最终交付${camp.output}及完整工程过程资料。`
+    : '当前方案保留自主推进节奏，可先围绕研究问题、技术路线和验证方法建立项目框架；需要专项基础强化时，仍可随时回来补选适配营地。'
+  const competitionSummary = selectedCompetitions.length
+    ? `所选赛事将作为项目成果接受外部评审与公开表达的进阶舞台。${selectedCompetitions.map((item) => item.description).join('；')}后续将依据赛制进一步整理测试证据、展示材料与路演方案。`
+    : '当前暂不绑定具体竞赛，先把研究问题、技术原型和测试证据做扎实；成果形态稳定后，再依据发明、研究或创业方向选择更合适的展示舞台。'
+
+  card(456, '01', '研究课题', project.title, project.description, projectTags)
+  card(806, '02', '六天项目营地', camp?.name ?? '已跳过营地', campSummary, camp?.focus ?? [])
+  card(1156, '03', '竞赛方向', selectedCompetitions.length ? selectedCompetitions.map((item) => item.shortName).join('  ×  ') : '已跳过竞赛', competitionSummary)
 
   context.fillStyle = '#fff0d9'
   context.beginPath()
-  context.roundRect(margin, 1480, canvas.width - margin * 2, 168, 30)
+  context.roundRect(margin, 1520, canvas.width - margin * 2, 168, 30)
   context.fill()
   context.fillStyle = '#c16b16'
   context.font = '700 22px Noto Sans SC, sans-serif'
-  context.fillText('自我认知', margin + 38, 1532)
+  context.fillText('自我认知', margin + 38, 1572)
   context.fillStyle = '#17151b'
   context.font = '700 34px Noto Sans SC, sans-serif'
-  context.fillText(assessment?.title ?? '待完成 · 可选', margin + 38, 1586)
+  context.fillText(assessment?.title ?? '待完成 · 可选', margin + 38, 1626)
   context.font = '500 20px Noto Sans SC, sans-serif'
   context.fillStyle = '#756d80'
-  wrapText(context, assessment?.note ?? '随时可以回来，用 1 分钟了解自己的项目起点。', margin + 38, 1624, canvas.width - margin * 2 - 76, 30, 2)
+  wrapText(context, assessment?.note ?? '随时可以回来，用 1 分钟了解自己的项目起点。', margin + 38, 1664, canvas.width - margin * 2 - 76, 30, 2)
 
   context.fillStyle = '#17151b'
   context.font = '700 24px Manrope, sans-serif'

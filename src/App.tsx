@@ -144,6 +144,22 @@ function getAssessment(score: number | null) {
   return { title: '可以直接推进', note: '你已经具备较好的项目基础，营地可作为专项强化。', tone: 'ready' }
 }
 
+function getProjectTags(project: Project) {
+  return project.majors.length >= 3 ? project.majors.slice(0, 3) : Array.from(new Set([...project.majors, '跨学科研究', '项目制学习'])).slice(0, 3)
+}
+
+function getCampSummary(camp: Camp | null) {
+  return camp
+    ? `${camp.description} 六天内将围绕核心技术完成需求拆解、系统实现、原型测试与成果表达，最终交付${camp.output}及完整工程过程资料。`
+    : '当前方案保留自主推进节奏，可先围绕研究问题、技术路线和验证方法建立项目框架；需要专项基础强化时，仍可随时回来补选适配营地。'
+}
+
+function getCompetitionSummary(selectedCompetitions: Competition[]) {
+  return selectedCompetitions.length
+    ? `所选赛事将作为项目成果接受外部评审与公开表达的进阶舞台。${selectedCompetitions.map((item) => item.detail.split('\n\n')[0].replace(/[。；;]+$/, '')).join('；')}。后续将依据赛制进一步整理测试证据、展示材料与路演方案。`
+    : '当前暂不绑定具体竞赛，先把研究问题、技术原型和测试证据做扎实；成果形态稳定后，再依据发明、研究或创业方向选择更合适的展示舞台。'
+}
+
 function wrapText(context: CanvasRenderingContext2D, text: string, x: number, y: number, maxWidth: number, lineHeight: number, maxLines = 20) {
   const characters = Array.from(text)
   let line = ''
@@ -270,17 +286,9 @@ async function makePoster(project: Project, camp: Camp | null, selectedCompetiti
     wrapText(context, summary, contentX, summaryTop, contentWidth, 25, summaryLines)
   }
 
-  const projectTags = project.majors.length >= 3 ? project.majors.slice(0, 3) : Array.from(new Set([...project.majors, '跨学科研究', '项目制学习'])).slice(0, 3)
-  const campSummary = camp
-    ? `${camp.description} 六天内将围绕核心技术完成需求拆解、系统实现、原型测试与成果表达，最终交付${camp.output}及完整工程过程资料。`
-    : '当前方案保留自主推进节奏，可先围绕研究问题、技术路线和验证方法建立项目框架；需要专项基础强化时，仍可随时回来补选适配营地。'
-  const competitionSummary = selectedCompetitions.length
-    ? `所选赛事将作为项目成果接受外部评审与公开表达的进阶舞台。${selectedCompetitions.map((item) => item.description).join('；')}后续将依据赛制进一步整理测试证据、展示材料与路演方案。`
-    : '当前暂不绑定具体竞赛，先把研究问题、技术原型和测试证据做扎实；成果形态稳定后，再依据发明、研究或创业方向选择更合适的展示舞台。'
-
-  card(456, '01', '研究课题', project.title, project.description, projectTags)
-  card(806, '02', '六天项目营地', camp?.name ?? '已跳过营地', campSummary, camp?.focus ?? [])
-  card(1156, '03', '竞赛方向', selectedCompetitions.length ? selectedCompetitions.map((item) => item.shortName).join('  ×  ') : '已跳过竞赛', competitionSummary)
+  card(456, '01', '研究课题', project.title, project.description, getProjectTags(project))
+  card(806, '02', '六天项目营地', camp?.name ?? '已跳过营地', getCampSummary(camp), camp?.focus ?? [])
+  card(1156, '03', '竞赛方向', selectedCompetitions.length ? selectedCompetitions.map((item) => item.shortName).join('  ×  ') : '已跳过竞赛', getCompetitionSummary(selectedCompetitions))
 
   context.fillStyle = '#fff0d9'
   context.beginPath()
@@ -591,9 +599,9 @@ export default function App() {
               <div className="result-heading"><p className="kicker">为 {grade} 的 {nickname} 定制</p><h1>{nickname}，<br />这是你的路线</h1><p>你的选择已经整理成一条清晰路线，跳过的模块也可以稍后补充。</p></div>
               <div className="student-summary"><div><span>PRIMETECH X LAB PATHWAY</span><b>{nickname}</b></div><strong>{grade}</strong></div>
               <div className="route-card">
-                <div><i>01</i><span>研究课题</span><b>{selectedProject.title}</b><p>{selectedProject.description}</p></div>
-                <div><i>02</i><span>六天项目营地</span><b>{selectedCamp?.name ?? '已跳过 · 直接推进课题'}</b><p>{selectedCamp?.description ?? '保留自主推进节奏；需要基础强化时，仍可回来补选适配营地。'}</p></div>
-                <div><i>03</i><span>竞赛方向</span><b>{selectedCompetitions.length ? selectedCompetitions.map((item) => item.name).join(' ＋ ') : '已跳过 · 稍后再决定'}</b><p>{selectedCompetitions.length ? selectedCompetitions.map((item) => item.description).join('；') : '先把课题做扎实，未来可根据成果形态补充更合适的展示舞台。'}</p></div>
+                <div><i>01</i><span>研究课题</span><div className="route-title-row"><b>{selectedProject.title}</b><span className="route-tags">{getProjectTags(selectedProject).map((tag) => <em key={tag}>{tag}</em>)}</span></div><p>{selectedProject.description}</p></div>
+                <div><i>02</i><span>六天项目营地</span><div className="route-title-row"><b>{selectedCamp?.name ?? '已跳过 · 直接推进课题'}</b>{selectedCamp && <span className="route-tags">{selectedCamp.focus.slice(0, 3).map((tag) => <em key={tag}>{tag}</em>)}</span>}</div><p>{getCampSummary(selectedCamp)}</p></div>
+                <div><i>03</i><span>竞赛方向</span><div className="route-title-row"><b>{selectedCompetitions.length ? selectedCompetitions.map((item) => item.name).join(' ＋ ') : '已跳过 · 稍后再决定'}</b></div><p>{getCompetitionSummary(selectedCompetitions)}</p></div>
               </div>
               {assessment ? <div className={`assessment-result ${assessment.tone}`}><Sparkles /><div><span>自我认知</span><b>{assessment.title}</b><small>{assessment.note}</small></div></div> : <button className="assessment-invite result-invite" onClick={() => { setQuizReturn('result'); setQuizIndex(0); setQuizAnswers([]); setScreen('quiz') }}><Sparkles /><div><b>还没做自我认知</b><span>可选 · 用 1 分钟补充起点判断</span></div><ChevronRight /></button>}
               <div className="export-block"><h2>带走你的方案</h2><p>生成手机海报后，长按图片即可分享或保存。</p><button className="primary-button purple-button" onClick={createPoster} disabled={posterBusy}>{posterBusy ? '正在排版…' : <><ImageIcon />生成规划海报</>}</button></div>

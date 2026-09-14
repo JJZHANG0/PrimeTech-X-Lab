@@ -289,9 +289,14 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .route-card > div { padding: 22px 0; display: grid; grid-template-columns: 30px 1fr; gap: 5px 10px; }
 .route-card > div + div { border-top: 1px solid #39353e; }
 .route-card i { grid-row: 1 / 4; color: #a885ff; font-size: 11px; font-style: normal; font-weight: 700; }
-.route-card span { color: #948e9c; font-size: 9px; }
+.route-card > div > span { color: #948e9c; font-size: 9px; }
+.route-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 10px; }
 .route-card b { font-size: 13px; line-height: 1.55; }
-.route-card p { margin: 3px 0 0; display: -webkit-box; overflow: hidden; color: #aaa4af; font-size: 9px; line-height: 1.65; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+.route-tags { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 5px; }
+.route-tags em { padding: 4px 7px; border-radius: 999px; background: #ede5ff; color: #b89cff; font-size: 8px; font-style: normal; font-weight: 700; line-height: 1.2; }
+.route-tags em:nth-child(2) { background: #e5f2ff; color: #79bfff; }
+.route-tags em:nth-child(3) { background: #e4f6ec; color: #77d59d; }
+.route-card p { margin: 5px 0 0; color: #aaa4af; font-size: 9px; line-height: 1.72; }
 .assessment-result { margin: 0 20px 16px; padding: 18px; border-radius: 18px; display: grid; grid-template-columns: 28px 1fr; gap: 10px; background: #fff0dc; }
 .assessment-result > svg { width: 18px; color: #c66a16; }
 .assessment-result div { display: grid; gap: 4px; }

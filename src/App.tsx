@@ -159,28 +159,31 @@ function getCompetitionSummary(selectedCompetitions: Competition[]) {
     : '当前暂不绑定具体竞赛，先把研究问题、技术原型和测试证据做扎实；成果形态稳定后，再依据发明、研究或创业方向选择更合适的展示舞台。'
 }
 
-function wrapText(context: CanvasRenderingContext2D, text: string, x: number, y: number, maxWidth: number, lineHeight: number, maxLines = 20) {
+function getWrappedLines(context: CanvasRenderingContext2D, text: string, maxWidth: number, maxLines = 20) {
   const characters = Array.from(text)
   let line = ''
-  let currentY = y
-  let lines = 0
+  const lines: string[] = []
   for (const character of characters) {
     const test = line + character
     if (context.measureText(test).width > maxWidth && line) {
-      context.fillText(line, x, currentY)
+      lines.push(line)
       line = character
-      currentY += lineHeight
-      lines += 1
-      if (lines >= maxLines - 1) break
+      if (lines.length >= maxLines - 1) break
     } else {
       line = test
     }
   }
-  if (line && lines < maxLines) {
-    context.fillText(line, x, currentY)
-    currentY += lineHeight
-  }
-  return currentY
+  if (line && lines.length < maxLines) lines.push(line)
+  return lines
+}
+
+function drawWrappedLines(context: CanvasRenderingContext2D, lines: string[], x: number, y: number, lineHeight: number) {
+  lines.forEach((line, index) => context.fillText(line, x, y + index * lineHeight))
+  return y + lines.length * lineHeight
+}
+
+function wrapText(context: CanvasRenderingContext2D, text: string, x: number, y: number, maxWidth: number, lineHeight: number, maxLines = 20) {
+  return drawWrappedLines(context, getWrappedLines(context, text, maxWidth, maxLines), x, y, lineHeight)
 }
 
 async function makePoster(project: Project, camp: Camp | null, selectedCompetitions: Competition[], assessment: ReturnType<typeof getAssessment>, nickname: string, grade: string): Promise<Poster> {
@@ -260,9 +263,28 @@ async function makePoster(project: Project, camp: Camp | null, selectedCompetiti
   }
 
   const card = (top: number, index: string, label: string, title: string, summary: string, tags: string[] = []) => {
+    const contentX = margin + 40
+    const contentWidth = canvas.width - margin * 2 - 80
+    context.font = '700 30px Noto Sans SC, sans-serif'
+    const titleWidth = context.measureText(title).width
+    const tagRowWidth = tags.length ? getTagRowWidth(tags) : 0
+    const tagsFitBesideTitle = Boolean(tags.length && titleWidth + tagRowWidth + 24 <= contentWidth)
+    context.font = '700 30px Noto Sans SC, sans-serif'
+    const titleLines = tagsFitBesideTitle ? [title] : getWrappedLines(context, title, contentWidth, 2)
+    const afterTitle = top + 98 + titleLines.length * 38
+    const tagTop = tagsFitBesideTitle ? top + 75 : afterTitle + 7
+    const tagBottom = tags.length
+      ? tagTop + 32
+      : afterTitle
+    const summaryTop = Math.max(afterTitle, tagBottom) + 20
+    context.font = '500 18px Noto Sans SC, sans-serif'
+    const summaryLines = getWrappedLines(context, summary, contentWidth, 4)
+    const afterSummary = summaryTop + summaryLines.length * 23
+    const cardHeight = Math.max(198, afterSummary - top + 12)
+
     context.fillStyle = '#fff'
     context.beginPath()
-    context.roundRect(margin, top, canvas.width - margin * 2, 330, 34)
+    context.roundRect(margin, top, canvas.width - margin * 2, cardHeight, 34)
     context.fill()
     context.fillStyle = '#6c3be7'
     context.font = '700 25px Manrope, sans-serif'
@@ -271,54 +293,52 @@ async function makePoster(project: Project, camp: Camp | null, selectedCompetiti
     context.font = '600 23px Noto Sans SC, sans-serif'
     context.fillText(label, margin + 92, top + 50)
     context.fillStyle = '#17151b'
-    const contentX = margin + 40
-    const contentWidth = canvas.width - margin * 2 - 80
     context.font = '700 30px Noto Sans SC, sans-serif'
-    const titleWidth = context.measureText(title).width
-    const tagRowWidth = tags.length ? getTagRowWidth(tags) : 0
-    const tagsFitBesideTitle = Boolean(tags.length && titleWidth + tagRowWidth + 24 <= contentWidth)
-    context.font = '700 30px Noto Sans SC, sans-serif'
-    const afterTitle = tagsFitBesideTitle
-      ? (context.fillText(title, contentX, top + 98), top + 136)
-      : wrapText(context, title, contentX, top + 98, contentWidth, 38, 2)
-    const tagBottom = tags.length
-      ? drawTags(tags, tagsFitBesideTitle ? contentX + titleWidth + 24 : contentX, tagsFitBesideTitle ? top + 75 : afterTitle + 7)
-      : afterTitle
-    const summaryTop = Math.max(afterTitle, tagBottom) + 20
+    drawWrappedLines(context, titleLines, contentX, top + 98, 38)
+    if (tags.length) drawTags(tags, tagsFitBesideTitle ? contentX + titleWidth + 24 : contentX, tagTop)
     context.font = '500 18px Noto Sans SC, sans-serif'
     context.fillStyle = '#706a76'
-    wrapText(context, summary, contentX, summaryTop, contentWidth, 23, 4)
+    drawWrappedLines(context, summaryLines, contentX, summaryTop, 23)
+    return top + cardHeight
   }
 
-  card(456, '01', '研究课题', project.title, project.description, getProjectTags(project))
-  card(806, '02', '六天项目营地', camp?.name ?? '已跳过营地', getCampSummary(camp), camp?.focus ?? [])
-  card(1156, '03', '竞赛方向', selectedCompetitions.length ? selectedCompetitions.map((item) => item.shortName).join('  ×  ') : '已跳过竞赛', getCompetitionSummary(selectedCompetitions))
+  let cardTop = 456
+  cardTop = card(cardTop, '01', '研究课题', project.title, project.description, getProjectTags(project)) + 20
+  cardTop = card(cardTop, '02', '六天项目营地', camp?.name ?? '已跳过营地', getCampSummary(camp), camp?.focus ?? []) + 20
+  const cardsBottom = card(cardTop, '03', '竞赛方向', selectedCompetitions.length ? selectedCompetitions.map((item) => item.shortName).join('  ×  ') : '已跳过竞赛', getCompetitionSummary(selectedCompetitions))
 
+  const assessmentTop = cardsBottom + 28
   context.fillStyle = '#fff0d9'
   context.beginPath()
-  context.roundRect(margin, 1520, canvas.width - margin * 2, 168, 30)
+  context.roundRect(margin, assessmentTop, canvas.width - margin * 2, 168, 30)
   context.fill()
   context.fillStyle = '#c16b16'
   context.font = '700 22px Noto Sans SC, sans-serif'
-  context.fillText('自我认知', margin + 38, 1572)
+  context.fillText('自我认知', margin + 38, assessmentTop + 52)
   context.fillStyle = '#17151b'
   context.font = '700 34px Noto Sans SC, sans-serif'
-  context.fillText(assessment?.title ?? '待完成 · 可选', margin + 38, 1626)
+  context.fillText(assessment?.title ?? '待完成 · 可选', margin + 38, assessmentTop + 106)
   context.font = '500 20px Noto Sans SC, sans-serif'
   context.fillStyle = '#756d80'
-  wrapText(context, assessment?.note ?? '随时可以回来，用 1 分钟了解自己的项目起点。', margin + 38, 1664, canvas.width - margin * 2 - 76, 30, 2)
+  wrapText(context, assessment?.note ?? '随时可以回来，用 1 分钟了解自己的项目起点。', margin + 38, assessmentTop + 144, canvas.width - margin * 2 - 76, 30, 2)
 
+  const footerTitleY = assessmentTop + 254
+  const footerCopyY = footerTitleY + 44
   context.fillStyle = '#17151b'
   context.font = '700 24px Manrope, sans-serif'
-  context.fillText('PRIMETECH X LAB', margin, 1780)
+  context.fillText('PRIMETECH X LAB', margin, footerTitleY)
   context.fillStyle = '#817b87'
   context.font = '500 20px Noto Sans SC, sans-serif'
-  context.fillText('从兴趣出发，把想法做成真实成果', margin, 1824)
+  context.fillText('从兴趣出发，把想法做成真实成果', margin, footerCopyY)
   context.textAlign = 'right'
-  context.fillText(new Date().toLocaleDateString('zh-CN'), canvas.width - margin, 1824)
+  context.fillText(new Date().toLocaleDateString('zh-CN'), canvas.width - margin, footerCopyY)
   context.textAlign = 'left'
 
-  const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob((value) => value ? resolve(value) : reject(new Error('海报生成失败')), 'image/png'))
+  const outputCanvas = document.createElement('canvas')
+  outputCanvas.width = canvas.width
+  outputCanvas.height = Math.ceil(footerCopyY + 72)
+  outputCanvas.getContext('2d')!.drawImage(canvas, 0, 0, outputCanvas.width, outputCanvas.height, 0, 0, outputCanvas.width, outputCanvas.height)
+  const blob = await new Promise<Blob>((resolve, reject) => outputCanvas.toBlob((value) => value ? resolve(value) : reject(new Error('海报生成失败')), 'image/png'))
   return { blob, url: URL.createObjectURL(blob) }
 }
 

@@ -6,7 +6,6 @@ import {
   CalendarDays,
   Check,
   ChevronRight,
-  ExternalLink,
   ImageIcon,
   LockKeyhole,
   Plus,
@@ -486,6 +485,7 @@ export default function App() {
             <motion.section key="project" className="planner" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }}>
               <StepHeader step={1} onReset={reset} />
               <PageHeading eyebrow="第一步 · 选择课题" title="你想研究什么？" copy="按专业筛选，也可以直接浏览全部课题。点标题查看介绍。" />
+              <div className="project-season-badge"><Sparkles />Q4 热门定制课题</div>
               <div className="filters">
                 <button className={`filter-trigger${selectedMajors.length ? ' has-value' : ''}`} onClick={() => setMajorFilterOpen(true)}><SlidersHorizontal /><span><small>适配专业 · 可多选</small><b>{selectedMajors.length ? `已选 ${selectedMajors.length} 项` : '全部专业'}</b></span><ChevronRight /></button>
                 <label className="search-box"><Search /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索课题" aria-label="搜索课题" /></label>
@@ -618,7 +618,7 @@ export default function App() {
 
       <AnimatePresence>
         {majorFilterOpen && <DetailSheet label="多选筛选" title="选择适配专业" onClose={() => setMajorFilterOpen(false)} action={<div className="filter-sheet-actions"><button onClick={() => setSelectedMajors([])}>清空选择</button><button className="primary-button" onClick={() => setMajorFilterOpen(false)}>完成 · {selectedMajors.length || '全部'}</button></div>}><p className="sheet-description filter-sheet-copy">可同时选择多个专业，课题匹配其中任意一个专业就会显示。</p><div className="major-options">{majors.map((item) => { const selected = selectedMajors.includes(item); return <button key={item} className={selected ? 'is-selected' : ''} onClick={() => setSelectedMajors((current) => selected ? current.filter((majorItem) => majorItem !== item) : [...current, item])}>{selected && <Check />}{item}</button> })}</div></DetailSheet>}
-        {detailProject && <DetailSheet label="课题介绍" title={detailProject.title} onClose={() => setDetailProject(null)} action={<div className="sheet-actions"><button className="preview-button" onClick={() => { setPreviewProject(detailProject); setDetailProject(null) }}><ImageIcon />预览课题海报</button><button className={`primary-button${selectedProjectId === detailProject.id ? ' is-selected' : ''}`} onClick={() => selectProject(detailProject)}>{selectedProjectId === detailProject.id ? <><Check />已选中这个课题</> : <>选择这个课题<ArrowRight /></>}</button></div>}><div className="tags">{detailProject.majors.map((item) => <span key={item}>{item}</span>)}</div><p className="sheet-description">{detailProject.description}</p></DetailSheet>}
+        {detailProject && <DetailSheet label="课题介绍" title={detailProject.title} onClose={() => setDetailProject(null)} action={<div className="sheet-actions"><button className="preview-button" onClick={() => { setPreviewProject(detailProject); setDetailProject(null) }}><ImageIcon />预览课题海报</button><button className={`primary-button${selectedProjectId === detailProject.id ? ' is-selected' : ''}`} onClick={() => selectProject(detailProject)}>{selectedProjectId === detailProject.id ? <><Check />已选中这个课题</> : <>选择这个课题<ArrowRight /></>}</button></div>}><div className="project-season-badge project-season-badge--detail"><Sparkles />Q4 热门定制课题</div><div className="tags">{detailProject.majors.map((item) => <span key={item}>{item}</span>)}</div><p className="sheet-description">{detailProject.description}</p></DetailSheet>}
         {detailCamp && <DetailSheet label="营地完整介绍 · 6 DAYS" title={detailCamp.name} onClose={() => setDetailCamp(null)} action={<button className={`primary-button${selectedCampId === detailCamp.id ? ' is-selected' : ''}`} onClick={() => { setSelectedCampId(selectedCampId === detailCamp.id ? null : detailCamp.id); setDetailCamp(null) }}>{selectedCampId === detailCamp.id ? <><Check />取消选择这个营地</> : <>选择这个营地<ArrowRight /></>}</button>}>
           {selectedProject?.campIds.includes(detailCamp.id) && <div className="detail-fit-badge"><Sparkles />与你的课题高度适配</div>}
           <div className="camp-theme"><span>主题诠释</span><p>{detailCamp.theme}</p></div>
@@ -630,7 +630,6 @@ export default function App() {
           <p className="sheet-description competition-description">{detailCompetition.detail}</p>
           <div className="timeline-heading"><CalendarDays /><div><b>关键时间线</b><span>{detailCompetition.timelineNote}</span></div></div>
           <ol className="competition-timeline">{detailCompetition.timeline.map((item) => <li key={`${item.date}-${item.label}`}><i /><div><time>{item.date}</time><b>{item.label}</b>{item.note && <span>{item.note}</span>}</div></li>)}</ol>
-          {detailCompetition.sourceUrl && <a className="official-link" href={detailCompetition.sourceUrl} target="_blank" rel="noreferrer">查看赛事官方信息<ExternalLink /></a>}
         </DetailSheet>}
         {previewProject && <motion.div className="project-preview-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><section className="project-preview-page"><header><Logo compact /><button className="round-button" onClick={() => setPreviewProject(null)} aria-label="关闭课题海报"><X /></button></header><div className={`project-poster-card${previewProject.poster ? ' has-official-poster' : ''}`}><img onLoad={() => setProjectPosterHintVisible(true)} src={`${import.meta.env.BASE_URL}${previewProject.poster ?? 'project-preview-placeholder.jpg'}`} alt={previewProject.poster ? `${previewProject.title}课题海报` : '课题海报待补充占位图片'} />{!previewProject.poster && <><div className="project-poster-shade" /><div className="project-poster-content"><p>PRIMETECH X LAB · PROJECT</p><h2>{previewProject.title}</h2><div>{previewProject.majors.slice(0, 3).map((item) => <span key={item}>{item}</span>)}</div><small>这项课题的正式海报尚未包含在本次表格中</small></div></>}</div>{projectPosterHintVisible && <motion.div className="project-save-hint" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}><span /><b>长按图片可直接保存</b></motion.div>}<button className="preview-back" onClick={() => { setDetailProject(previewProject); setPreviewProject(null) }}><ArrowLeft />返回课题介绍</button></section></motion.div>}
         {poster && <motion.div className="poster-backdrop poster-guide" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>

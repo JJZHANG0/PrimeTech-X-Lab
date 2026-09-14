@@ -238,26 +238,26 @@ async function makePoster(project: Project, camp: Camp | null, selectedCompetiti
     { background: '#e5f6ec', foreground: '#26764a' },
   ]
 
-  const drawTags = (tags: string[], x: number, y: number, maxWidth: number) => {
+  const getTagRowWidth = (tags: string[]) => {
+    context.font = '700 17px Noto Sans SC, sans-serif'
+    return tags.slice(0, 3).reduce((width, tag, index) => width + Math.ceil(context.measureText(tag).width) + 28 + (index ? 10 : 0), 0)
+  }
+
+  const drawTags = (tags: string[], x: number, y: number) => {
     context.font = '700 17px Noto Sans SC, sans-serif'
     let currentX = x
-    let currentY = y
     tags.slice(0, 3).forEach((tag, index) => {
       const width = Math.ceil(context.measureText(tag).width) + 28
-      if (currentX + width > x + maxWidth && currentX > x) {
-        currentX = x
-        currentY += 40
-      }
       const colors = tagPalette[index % tagPalette.length]
       context.fillStyle = colors.background
       context.beginPath()
-      context.roundRect(currentX, currentY, width, 32, 16)
+      context.roundRect(currentX, y, width, 32, 16)
       context.fill()
       context.fillStyle = colors.foreground
-      context.fillText(tag, currentX + 14, currentY + 22)
+      context.fillText(tag, currentX + 14, y + 22)
       currentX += width + 10
     })
-    return currentY + 32
+    return y + 32
   }
 
   const card = (top: number, index: string, label: string, title: string, summary: string, tags: string[] = []) => {
@@ -274,16 +274,21 @@ async function makePoster(project: Project, camp: Camp | null, selectedCompetiti
     context.fillStyle = '#17151b'
     const contentX = margin + 40
     const contentWidth = canvas.width - margin * 2 - 80
-    const tagWidth = tags.length ? 300 : 0
-    const titleWidth = tags.length ? contentWidth - tagWidth - 32 : contentWidth
     context.font = '700 30px Noto Sans SC, sans-serif'
-    const afterTitle = wrapText(context, title, contentX, top + 98, titleWidth, 38, 2)
-    const tagBottom = tags.length ? drawTags(tags, contentX + titleWidth + 32, top + 76, tagWidth) : top + 76
+    const titleWidth = context.measureText(title).width
+    const tagRowWidth = tags.length ? getTagRowWidth(tags) : 0
+    const tagsFitBesideTitle = Boolean(tags.length && titleWidth + tagRowWidth + 24 <= contentWidth)
+    context.font = '700 30px Noto Sans SC, sans-serif'
+    const afterTitle = tagsFitBesideTitle
+      ? (context.fillText(title, contentX, top + 98), top + 136)
+      : wrapText(context, title, contentX, top + 98, contentWidth, 38, 2)
+    const tagBottom = tags.length
+      ? drawTags(tags, tagsFitBesideTitle ? contentX + titleWidth + 24 : contentX, tagsFitBesideTitle ? top + 75 : afterTitle + 7)
+      : afterTitle
     const summaryTop = Math.max(afterTitle, tagBottom) + 20
-    const summaryLines = summaryTop > top + 185 ? 3 : 4
-    context.font = '500 19px Noto Sans SC, sans-serif'
+    context.font = '500 18px Noto Sans SC, sans-serif'
     context.fillStyle = '#706a76'
-    wrapText(context, summary, contentX, summaryTop, contentWidth, 25, summaryLines)
+    wrapText(context, summary, contentX, summaryTop, contentWidth, 23, 4)
   }
 
   card(456, '01', '研究课题', project.title, project.description, getProjectTags(project))
